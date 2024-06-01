@@ -1,0 +1,16 @@
+{
+  "name": "@packages/mongodb",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "randriantsarafara-wbd <165807404+randriantsarafara-wbd@users.noreply.github.com>",
+  "homepage": "https://github.com/ny-randriantsarafara/aws-labs-api#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ny-randriantsarafara/aws-labs-api.git"
+  },
+  "dependencies": {
+    "mongoose": "^8.4.3"
+  }
+}
