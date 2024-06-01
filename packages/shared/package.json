@@ -1,0 +1,15 @@
+{
+  "name": "@packages/shared",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Ny Hasinavalona Randriantsarafara <nyhasinavalonar@gmail.com>",
+  "homepage": "https://github.com/ny-randriantsarafara/aws-labs-api#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "dependencies": {
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^10.0.0"
+  }
+}

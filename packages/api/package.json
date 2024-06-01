@@ -1,0 +1,15 @@
+{
+  "name": "@packages/api",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "randriantsarafara-wbd <165807404+randriantsarafara-wbd@users.noreply.github.com>",
+  "homepage": "https://github.com/ny-randriantsarafara/aws-labs-api#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "dependencies": {
+    "aws-lambda": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.140"
+  }
+}
