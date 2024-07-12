@@ -1,0 +1,16 @@
+{
+  "name": "@packages/path-finding",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Ny Hasinavalona Randriantsarafara <nyhasinavalonar@gmail.com>",
+  "homepage": "https://github.com/ny-randriantsarafara/aws-labs-api#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ny-randriantsarafara/aws-labs-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ny-randriantsarafara/aws-labs-api/issues"
+  }
+}

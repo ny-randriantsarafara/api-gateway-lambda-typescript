@@ -17,7 +17,7 @@ const buildPath = (cameFrom: Map<State, State>, current: State): State[] => {
     current = cameFrom.get(current)!;
     path.push(current);
   }
-  return path;
+  return path.reverse();
 };
 
 const aStar = (start: State, end: State): State[] | null => {
@@ -47,7 +47,6 @@ const aStar = (start: State, end: State): State[] | null => {
     openSet.delete(current);
 
     for (const [neighborID, neighbor] of Object.entries(current.neighbors)) {
-      console.log('neighbor', neighbor.id);
       const tentativeGScore = gScore.get(current)! + neighbor.cost;
       if (tentativeGScore < (gScore.get(neighbor) || Infinity)) {
         cameFrom.set(neighbor, current);
@@ -129,4 +128,4 @@ const start: State = {
   },
 };
 
-console.log(aStar(start, { id: '6', cost: 0, estimatedCost: 0, neighbors: {} }));
+console.log(aStar(start, { id: '6', cost: 0, estimatedCost: 0, neighbors: {} })?.map((n) => n.id).join(' -> '));
