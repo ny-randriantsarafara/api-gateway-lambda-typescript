@@ -1,131 +1,70 @@
-type NodeID = string;
+import { GraphNode } from './types';
+import { aStar } from './utils';
 
-interface GraphNode {
-  id: NodeID;
-  neighbors: Record<NodeID, GraphNode>;
-}
+export * from './types';
+export * from './utils';
 
-interface State extends GraphNode {
-  cost: number;
-  estimatedCost: number;
-  neighbors: Record<NodeID, State>;
-}
-
-const buildPath = (cameFrom: Map<State, State>, current: State): State[] => {
-  const path = [current];
-  while (cameFrom.has(current)) {
-    current = cameFrom.get(current)!;
-    path.push(current);
-  }
-  return path.reverse();
+const NODE_IDS = {
+  N0: '0',
+  N1: '1',
+  N2: '2',
+  N3: '3',
+  N4: '4',
+  N5: '5',
+  N6: '6',
 };
 
-const aStar = (start: State, end: State): State[] | null => {
-  const openSet = new Set<State>([start]);
-  const cameFrom = new Map<State, State>();
-
-  // Cost from start to node
-  const gScore = new Map<State, number>();
-  gScore.set(start, 0);
-
-  // Estimated cost from start to end through node
-  const fScore = new Map<State, number>();
-  fScore.set(start, start.estimatedCost);
-
-  while (openSet.size > 0) {
-    const current: State = [...Array.from(openSet)].reduce((a, c) => {
-      if (fScore.get(a)! < (fScore.get(c)! || Infinity)) {
-        return a;
-      }
-      return c;
-    });
-
-    if (current.id === end.id) {
-      return buildPath(cameFrom, current);
-    }
-
-    openSet.delete(current);
-
-    for (const [neighborID, neighbor] of Object.entries(current.neighbors)) {
-      const tentativeGScore = gScore.get(current)! + neighbor.cost;
-      if (tentativeGScore < (gScore.get(neighbor) || Infinity)) {
-        cameFrom.set(neighbor, current);
-        gScore.set(neighbor, tentativeGScore);
-        fScore.set(neighbor, tentativeGScore + neighbor.estimatedCost);
-        openSet.add(neighbor);
-      }
-    }
-  }
-
-  return null;
+const n0: GraphNode = {
+  id: NODE_IDS.N0,
+  estimatedCostToGoal: 9,
+  neighbors: [
+    { node: NODE_IDS.N1, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
+    { node: NODE_IDS.N2, cost: { costFromParent: 4, estimatedCostToGoal: 2 } },
+    { node: NODE_IDS.N3, cost: { costFromParent: 4, estimatedCostToGoal: 2 } },
+  ],
+};
+const n1: GraphNode = {
+  id: '1',
+  estimatedCostToGoal: 5,
+  neighbors: [
+    { node: NODE_IDS.N5, cost: { costFromParent: 7, estimatedCostToGoal: 5 } },
+  ],
+};
+const n2: GraphNode = {
+  id: '2',
+  estimatedCostToGoal: 2,
+  neighbors: [
+    { node: NODE_IDS.N4, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
+  ],
+};
+const n3: GraphNode = {
+  id: '3',
+  estimatedCostToGoal: 5,
+  neighbors: [
+    { node: NODE_IDS.N4, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
+  ],
+};
+const n4: GraphNode = {
+  id: '4',
+  estimatedCostToGoal: 2,
+  neighbors: [
+    { node: NODE_IDS.N6, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
+  ],
+};
+const n5: GraphNode = {
+  id: '5',
+  estimatedCostToGoal: 2,
+  neighbors: [
+    { node: NODE_IDS.N6, cost: { costFromParent: 4, estimatedCostToGoal: 2 } },
+  ],
+};
+const n6: GraphNode = {
+  id: '6',
+  estimatedCostToGoal: 0,
+  neighbors: [
+  ],
 };
 
-const start: State = {
-  id: '0',
-  cost: 0,
-  estimatedCost: 9,
-  neighbors: {
-    '3': {
-      id: '3',
-      cost: 2,
-      estimatedCost: 5,
-      neighbors: {
-        '4': {
-          id: '4',
-          cost: 1,
-          estimatedCost: 3,
-          neighbors: {
-            '6': {
-              id: '6',
-              cost: 4,
-              estimatedCost: 0,
-              neighbors: {},
-            },
-          },
-        },
-      },
-    },
-    '2': {
-      id: '2',
-      cost: 4,
-      estimatedCost: 2,
-      neighbors: {
-        '4': {
-          id: '4',
-          cost: 2,
-          estimatedCost: 3,
-          neighbors: {
-            '6': {
-              id: '6',
-              cost: 4,
-              estimatedCost: 0,
-              neighbors: {},
-            },
-          },
-        },
-      },
-    },
-    '1': {
-      id: '1',
-      cost: 3,
-      estimatedCost: 2,
-      neighbors: {
-        '5': {
-          id: '5',
-          cost: 7,
-          estimatedCost: 2,
-          neighbors: {
-            '6': {
-              id: '6',
-              cost: 4,
-              estimatedCost: 0,
-              neighbors: {},
-            },
-          },
-        },
-      },
-    },
-  },
-};
-
-console.log(aStar(start, { id: '6', cost: 0, estimatedCost: 0, neighbors: {} })?.map((n) => n.id).join(' -> '));
+console.log(aStar(Array.of(n0, n1, n2, n3, n4, n5, n6), n0, n6));
+console.log(aStar(Array.of(n0, n1, n2, n3, n4, n5, n6), n3, n6));
+console.log(aStar(Array.of(n0, n1, n2, n3, n4, n5, n6), n1, n6));
