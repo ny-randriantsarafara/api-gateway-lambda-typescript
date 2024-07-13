@@ -1,70 +1,33 @@
-import { GraphNode } from './types';
-import { aStar } from './utils';
+import { Graph, GraphNode } from './graph';
 
-export * from './types';
-export * from './utils';
+const graph = new Graph();
 
-const NODE_IDS = {
-  N0: '0',
-  N1: '1',
-  N2: '2',
-  N3: '3',
-  N4: '4',
-  N5: '5',
-  N6: '6',
+const computeHeuristic = (a: GraphNode, b: GraphNode) => {
+  return 1;
 };
 
-const n0: GraphNode = {
-  id: NODE_IDS.N0,
-  estimatedCostToGoal: 9,
-  neighbors: [
-    { node: NODE_IDS.N1, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
-    { node: NODE_IDS.N2, cost: { costFromParent: 4, estimatedCostToGoal: 2 } },
-    { node: NODE_IDS.N3, cost: { costFromParent: 4, estimatedCostToGoal: 2 } },
-  ],
-};
-const n1: GraphNode = {
-  id: '1',
-  estimatedCostToGoal: 5,
-  neighbors: [
-    { node: NODE_IDS.N5, cost: { costFromParent: 7, estimatedCostToGoal: 5 } },
-  ],
-};
-const n2: GraphNode = {
-  id: '2',
-  estimatedCostToGoal: 2,
-  neighbors: [
-    { node: NODE_IDS.N4, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
-  ],
-};
-const n3: GraphNode = {
-  id: '3',
-  estimatedCostToGoal: 5,
-  neighbors: [
-    { node: NODE_IDS.N4, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
-  ],
-};
-const n4: GraphNode = {
-  id: '4',
-  estimatedCostToGoal: 2,
-  neighbors: [
-    { node: NODE_IDS.N6, cost: { costFromParent: 3, estimatedCostToGoal: 2 } },
-  ],
-};
-const n5: GraphNode = {
-  id: '5',
-  estimatedCostToGoal: 2,
-  neighbors: [
-    { node: NODE_IDS.N6, cost: { costFromParent: 4, estimatedCostToGoal: 2 } },
-  ],
-};
-const n6: GraphNode = {
-  id: '6',
-  estimatedCostToGoal: 0,
-  neighbors: [
-  ],
-};
+graph.addNode(new GraphNode('N0', []));
+graph.addNode(new GraphNode('N1', []));
+graph.addNode(new GraphNode('N2', []));
+graph.addNode(new GraphNode('N3', []));
+graph.addNode(new GraphNode('N4', []));
+graph.addNode(new GraphNode('N5', []));
+graph.addNode(new GraphNode('N6', []));
 
-console.log(aStar(Array.of(n0, n1, n2, n3, n4, n5, n6), n0, n6));
-console.log(aStar(Array.of(n0, n1, n2, n3, n4, n5, n6), n3, n6));
-console.log(aStar(Array.of(n0, n1, n2, n3, n4, n5, n6), n1, n6));
+graph.addEdge('N0', 'N3', 2);
+graph.addEdge('N0', 'N2', 4);
+graph.addEdge('N0', 'N1', 3);
+graph.addEdge('N3', 'N2', 1);
+graph.addEdge('N3', 'N4', 1);
+graph.addEdge('N2', 'N4', 2);
+graph.addEdge('N4', 'N6', 4);
+graph.addEdge('N1', 'N5', 7);
+graph.addEdge('N5', 'N6', 4);
+
+console.log(graph.findShortestPath('N6', 'N0', computeHeuristic));
+console.log(graph.findShortestPath('N0', 'N6', computeHeuristic));
+console.log(graph.findShortestPath('N3', 'N2', computeHeuristic));
+console.log(graph.findShortestPath('N2', 'N3', computeHeuristic));
+console.log(graph.findShortestPath('N3', 'N1', computeHeuristic));
+console.log(graph.findShortestPath('N5', 'N3', computeHeuristic));
+console.log(graph.findShortestPath('N2', 'N5', computeHeuristic));
