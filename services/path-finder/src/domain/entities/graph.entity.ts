@@ -17,8 +17,8 @@ export class Graph {
     let fromNode = this.nodes.get(from);
     let toNode = this.nodes.get(to);
     if (fromNode && toNode) {
-      fromNode.neighbors.push(new Edge(toNode, cost));
-      toNode.neighbors.push(new Edge(fromNode, cost));
+      fromNode.neighbors.push(new Edge(fromNode, toNode, cost));
+      toNode.neighbors.push(new Edge(fromNode, toNode, cost));
     }
   }
 
