@@ -1,4 +1,5 @@
-import { Graph, GraphNode } from './graph';
+import { GraphNode } from './domain/entities/graph-node.entity';
+import { Graph } from './domain/entities/graph.entity';
 
 const graph = new Graph();
 

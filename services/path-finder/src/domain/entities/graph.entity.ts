@@ -1,24 +1,6 @@
-export type Identifier = string;
-
-export class Edge {
-  target: GraphNode;
-  cost: number;
-
-  constructor(target: GraphNode, cost: number) {
-    this.target = target;
-    this.cost = cost;
-  }
-}
-
-export class GraphNode {
-  id: Identifier;
-  neighbors: Edge[];
-
-  constructor(id: Identifier, neighbors: Edge[]) {
-    this.id = id;
-    this.neighbors = neighbors;
-  }
-}
+import { Identifier } from '../object-values/identifier.type';
+import { Edge } from './edge.entity';
+import { GraphNode } from './graph-node.entity';
 
 export class Graph {
   nodes: Map<Identifier, GraphNode>;
