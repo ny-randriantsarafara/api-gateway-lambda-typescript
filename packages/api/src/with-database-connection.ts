@@ -1,6 +1,6 @@
 import { Connect, HttpRequest } from './types';
 
-export const withDatabaseConnection = (connect: Connect, databaseUri: string) => async (input: HttpRequest) => {
+export const withDatabaseConnection = <T>(connect: Connect<T>, databaseUri: string) => async (input: HttpRequest) => {
   const connection = await connect(databaseUri);
   return { ...input, connection };
 };

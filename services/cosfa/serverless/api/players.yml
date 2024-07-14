@@ -1,11 +1,11 @@
 get-players:
-  handler: src/infrastructure/api/get-players-api.handler
+  handler: src/infrastructure/api/players-api.handler
   events:
     - http:
         path: /players
         method: get
 get-player-by-id:
-  handler: src/infrastructure/api/get-player-by-id-api.handler
+  handler: src/infrastructure/api/players-api.handler
   events:
     - http:
         path: /players/{id}
@@ -15,7 +15,7 @@ get-player-by-id:
             paths:
               id: true
 create-player:
-  handler: src/infrastructure/api/create-player-api.handler
+  handler: src/infrastructure/api/players-api.handler
   events:
     - http:
         path: /players
@@ -24,7 +24,7 @@ create-player:
           schemas:
             application/json: ${file(serverless/api/schemas/create-player.json)}
 update-player:
-  handler: src/infrastructure/api/update-player-api.handler
+  handler: src/infrastructure/api/players-api.handler
   events:
     - http:
         path: /players/{id}
@@ -36,7 +36,7 @@ update-player:
           schemas:
             application/json: ${file(serverless/api/schemas/update-player.json)}
 delete-player:
-  handler: src/infrastructure/api/delete-player-api.handler
+  handler: src/infrastructure/api/players-api.handler
   events:
     - http:
         path: /players/{id}
