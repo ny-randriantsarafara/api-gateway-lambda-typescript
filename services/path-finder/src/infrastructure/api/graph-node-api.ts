@@ -8,6 +8,7 @@ import { createGraphNodeUseCase } from '../../application/use-cases/graph-node/c
 import { getGraphNodesUseCase } from '../../application/use-cases/graph-node/get-graph-nodes.use-case';
 import { getGraphNodeByIdUseCase } from '../../application/use-cases/graph-node/get-graph-node-by-id.use-case';
 import { updateGraphNodeUseCase } from '../../application/use-cases/graph-node/update-graph-node.use-case';
+import { deleteGraphNodeUseCase } from '../../application/use-cases/graph-node/delete-graph-node.use-case';
 
 const graphNodeApi = api();
 
@@ -21,13 +22,13 @@ graphNodeApi.register('POST', '/graph-nodes', withDatabaseConnection(dbClient.co
 });
 
 graphNodeApi.register(
-    'PUT',
-    '/graph-nodes/{id}',
-    withDatabaseConnection(dbClient.connect, databaseUri),
-    async request => {
-        console.log({ pathParameters: request.pathParameters, body: request.body });
-        return updateGraphNodeUseCase(repository.updateGraphNode)(request.pathParameters?.id as string, request.body);
-    }
+  'PUT',
+  '/graph-nodes/{id}',
+  withDatabaseConnection(dbClient.connect, databaseUri),
+  async request => {
+    console.log({ pathParameters: request.pathParameters, body: request.body });
+    return updateGraphNodeUseCase(repository.updateGraphNode)(request.pathParameters?.id as string, request.body);
+  }
 );
 
 graphNodeApi.register('GET', '/graph-nodes', withDatabaseConnection(dbClient.connect, databaseUri), async request => {
@@ -40,6 +41,15 @@ graphNodeApi.register(
   withDatabaseConnection(dbClient.connect, databaseUri),
   async request => {
     return getGraphNodeByIdUseCase(repository.getById)(request.pathParameters?.id as string);
+  }
+);
+
+graphNodeApi.register(
+  'DELETE',
+  '/graph-nodes/{id}',
+  withDatabaseConnection(dbClient.connect, databaseUri),
+  async request => {
+    return deleteGraphNodeUseCase(repository.deleteGraphNode)(request.pathParameters?.id as string);
   }
 );
 

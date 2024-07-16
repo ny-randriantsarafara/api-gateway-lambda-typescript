@@ -2,7 +2,6 @@ import { UpdateGraphNode } from '../../../domain/repositories/graph-node.reposit
 import { GraphNode } from '../../../domain/entities/graph-node.entity';
 
 export const updateGraphNodeUseCase = (updateGraphNode: UpdateGraphNode) => async (id: string, data: GraphNode) => {
-  console.log(id);
   const result = await updateGraphNode(id, data);
   if (typeof result === 'undefined') {
     throw new Error('Graph node could not be updated.');
