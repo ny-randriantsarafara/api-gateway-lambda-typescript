@@ -2,16 +2,21 @@
   "definitions": {},
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "title": "CreateGraphNodeSchema",
+  "title": "CreateEdgeSchema",
   "required": [
-    "name"
+    "from",
+    "target",
+    "cost"
   ],
   "properties": {
-    "name": {
+    "from": {
       "type": "string"
     },
-    "neighbors": {
-      "type": "array"
+    "target": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "number"
     }
   }
 }

@@ -1,0 +1,37 @@
+create-edge:
+  handler: src/infrastructure/api/edge-api.handler
+  events:
+    - http:
+        path: /edges
+        method: post
+        request:
+          schemas:
+            application/json: ${file(serverless/api/schemas/create-edge.json)}
+
+get-edges:
+  handler: src/infrastructure/api/edge-api.handler
+  events:
+    - http:
+        path: /edges
+        method: get
+
+get-edge-by-id:
+  handler: src/infrastructure/api/edge-api.handler
+  events:
+    - http:
+        path: /edges/{id}
+        method: get
+
+update-edge:
+  handler: src/infrastructure/api/edge-api.handler
+  events:
+    - http:
+        path: /edges/{id}
+        method: put
+
+delete-edge:
+  handler: src/infrastructure/api/edge-api.handler
+  events:
+    - http:
+        path: /edges/{id}
+        method: delete

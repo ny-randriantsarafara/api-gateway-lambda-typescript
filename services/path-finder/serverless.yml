@@ -16,3 +16,4 @@ provider:
 
 functions:
   - ${file(serverless/api/graph-nodes.yml)}
+  - ${file(serverless/api/edges.yml)}
