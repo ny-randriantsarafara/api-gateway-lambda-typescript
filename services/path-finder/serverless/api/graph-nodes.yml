@@ -14,3 +14,10 @@ get-graph-nodes:
     - http:
         path: /graph-nodes
         method: get
+
+get-graph-node-by-id:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes/{id}
+        method: get
