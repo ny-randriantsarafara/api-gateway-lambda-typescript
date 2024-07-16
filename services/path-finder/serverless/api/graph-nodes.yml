@@ -7,3 +7,10 @@ create-graph-node:
         request:
           schemas:
             application/json: ${file(serverless/api/schemas/create-graph-node.json)}
+
+get-graph-nodes:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes
+        method: get
