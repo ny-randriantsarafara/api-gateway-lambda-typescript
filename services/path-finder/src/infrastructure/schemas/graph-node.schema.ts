@@ -4,7 +4,6 @@ import { GraphNode } from '../../domain/entities/graph-node.entity';
 const GraphNodeSchema = new Schema<GraphNode>({
   id: { type: String, required: true },
   name: { type: String, required: true },
-  neighbors: [{ type: Schema.Types.ObjectId, ref: 'Edge' }],
 });
 
 GraphNodeSchema.path('id');
