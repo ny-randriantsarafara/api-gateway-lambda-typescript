@@ -21,3 +21,10 @@ get-graph-node-by-id:
     - http:
         path: /graph-nodes/{id}
         method: get
+
+update-graph-node:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes/{id}
+        method: put

@@ -19,11 +19,7 @@ export const graphNodeRepository = (client: MongoDBClient<GraphNode>): GraphNode
     return mapGraphNode(graphNode);
   },
   updateGraphNode: async (id: string, graphNode: GraphNode) => {
-    const existingGraphNode = await client.getById(id);
-    if (typeof existingGraphNode === 'undefined') {
-      return;
-    }
-    await client.update(existingGraphNode.id, graphNode);
+    await client.update(id, graphNode);
     const updatedGraphNode = await client.getById(id);
     return mapGraphNode(updatedGraphNode);
   },
