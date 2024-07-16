@@ -6,7 +6,7 @@ create-edge:
         method: post
         request:
           schemas:
-            application/json: ${file(serverless/api/schemas/create-edge.json)}
+            application/json: ${file(serverless/api/schemas/edge/create-edge.json)}
 
 get-edges:
   handler: src/infrastructure/api/edge-api.handler
@@ -28,6 +28,9 @@ update-edge:
     - http:
         path: /edges/{id}
         method: put
+        request:
+          schemas:
+            application/json: ${file(serverless/api/schemas/edge/update-edge.json)}
 
 delete-edge:
   handler: src/infrastructure/api/edge-api.handler

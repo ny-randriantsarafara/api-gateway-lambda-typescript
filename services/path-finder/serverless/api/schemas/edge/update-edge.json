@@ -1,0 +1,17 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "UpdateEdgeSchema",
+  "properties": {
+    "from": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "number"
+    }
+  }
+}
