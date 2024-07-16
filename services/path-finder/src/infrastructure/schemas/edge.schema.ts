@@ -7,6 +7,4 @@ const EdgeSchema = new Schema<Edge>({
   cost: { type: Number, required: true },
 });
 
-EdgeSchema.path('id');
-
 export const EdgeModel = model<Edge>('Edge', EdgeSchema);
