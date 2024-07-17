@@ -11,5 +11,6 @@ export const updateGraphNodeUseCase = (updateGraphNode: UpdateGraphNode) => asyn
     id: result.id,
     name: result.name,
     neighbors: result.neighbors,
+    coordinates: result.coordinates,
   });
 };

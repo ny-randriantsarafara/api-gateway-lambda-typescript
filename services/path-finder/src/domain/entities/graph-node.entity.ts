@@ -6,6 +6,7 @@ import { CreateGraphNodeDTO } from '../object-values/graph-node.dto';
 export class GraphNode extends BaseEntity<GraphNode> {
   id: Identifier;
   name: string;
+  coordinates: [number, number]; // longitude, latitude
   neighbors: Edge[];
 
   constructor(options: CreateGraphNodeDTO) {

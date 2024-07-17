@@ -11,5 +11,6 @@ export const getGraphNodeByIdUseCase = (getGraphNode: GetGraphNodeById) => async
     id: result.id,
     name: result.name,
     neighbors: result.neighbors,
+    coordinates: result.coordinates
   });
 };

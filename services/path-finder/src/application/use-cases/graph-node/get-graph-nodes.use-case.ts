@@ -9,6 +9,7 @@ export const getGraphNodesUseCase = (getGraphNodes: GetGraphNodes) => async () =
       id: node.id,
       name: node.name,
       neighbors: node.neighbors,
+      coordinates: node.coordinates,
     })
   );
 };
