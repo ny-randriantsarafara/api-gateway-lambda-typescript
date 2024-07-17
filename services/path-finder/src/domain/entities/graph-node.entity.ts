@@ -1,14 +1,15 @@
 import { Identifier } from '../object-values/identifier.type';
+import { BaseEntity } from './base.entity';
 import { Edge } from './edge.entity';
+import { CreateGraphNodeDTO } from '../object-values/graph-node.dto';
 
-export class GraphNode {
+export class GraphNode extends BaseEntity<GraphNode> {
   id: Identifier;
   name: string;
   neighbors: Edge[];
 
-  constructor(id: Identifier, name: string, neighbors: Edge[]) {
-    this.id = id;
-    this.name = name;
-    this.neighbors = neighbors;
+  constructor(options: CreateGraphNodeDTO) {
+    super(options);
+    Object.assign(this, options);
   }
 }

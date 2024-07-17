@@ -6,5 +6,5 @@ export const getEdgeByIdUseCase = (getEdge: GetEdgeById) => async (id: string) =
   if (typeof result === 'undefined') {
     throw new Error('Edge node not found');
   }
-  return new Edge(result.id, result.from, result.target, result.cost);
+  return Edge.create({ id: result.id, from: result.from, target: result.target, cost: result.cost });
 };
