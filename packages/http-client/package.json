@@ -1,0 +1,9 @@
+{
+  "name": "@packages/http-client",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "randriantsarafara-wbd <165807404+randriantsarafara-wbd@users.noreply.github.com>",
+  "homepage": "https://github.com/ny-randriantsarafara/aws-labs-api#readme",
+  "license": "ISC",
+  "main": "src/index.ts"
+}
