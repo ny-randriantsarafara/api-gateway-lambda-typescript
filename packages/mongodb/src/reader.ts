@@ -5,7 +5,7 @@ export type QueryOptions = {
   hydrates?: string[];
 };
 
-export const reader = <T>(Model: MongooseModel<T>) => ({
+export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
   getById: async (id: string, options?: QueryOptions) => {
     let query = Model.findById(id);
     if (options?.hydrates) {
@@ -29,4 +29,8 @@ export const reader = <T>(Model: MongooseModel<T>) => ({
   },
 });
 
-export type MongoDBReader<T> = ReturnType<typeof reader<T>>;
+export type MongoDBReader = {
+  getById: (id: string, options?: QueryOptions) => Promise<any>;
+  getOne: (filters: Record<string, any>, options?: QueryOptions) => Promise<any>;
+  getAll: (filters: Record<string, any>, options?: QueryOptions) => Promise<any[]>;
+};

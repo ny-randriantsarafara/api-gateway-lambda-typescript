@@ -13,7 +13,7 @@ export const mapGraphNode = (graphNode: GraphNodeDBModel) => {
   };
 };
 
-export const graphNodeRepositoryBuilder = (client: MongoDBClient<GraphNode>): GraphNodeRepository => ({
+export const graphNodeRepositoryBuilder = (client: MongoDBClient): GraphNodeRepository => ({
   createGraphNode: async (graphNode: GraphNode) => {
     const { coordinates, ...rest } = graphNode;
     return mapGraphNode(await client.create({ ...rest, location: { type: 'Point', coordinates } }));

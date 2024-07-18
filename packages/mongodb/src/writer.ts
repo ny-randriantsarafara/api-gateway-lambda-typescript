@@ -2,8 +2,8 @@ import { Model as MongooseModel, UpdateQuery } from 'mongoose';
 import { executeQuery, fetchAndThrowIfNotFound } from './utils';
 import { QueryOptions } from './reader';
 
-export const writer = <T>(Model: MongooseModel<T>) => ({
-  create: async (data: T, options?: QueryOptions) => {
+export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
+  create: async (data: any, options?: QueryOptions) => {
     try {
       const dbModel = new Model(data);
       const result = await dbModel.save();
@@ -17,7 +17,7 @@ export const writer = <T>(Model: MongooseModel<T>) => ({
       throw error;
     }
   },
-  update: async (id: string, data: UpdateQuery<T>, options?: QueryOptions) => {
+  update: async (id: string, data: UpdateQuery<any>, options?: QueryOptions) => {
     let dbModel = await fetchAndThrowIfNotFound(Model.findById(id), `Document with id ${id} not found`);
     for (const key in data) {
       dbModel[key] = data[key];
@@ -35,4 +35,8 @@ export const writer = <T>(Model: MongooseModel<T>) => ({
   },
 });
 
-export type MongoDBWriter<T> = ReturnType<typeof writer<T>>;
+export type MongoDBWriter = {
+    create: (data: any, options?: QueryOptions) => Promise<any>;
+    update: (id: string, data: UpdateQuery<any>, options?: QueryOptions) => Promise<any>;
+    delete: (id: string) => Promise<void>;
+};
