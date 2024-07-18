@@ -5,8 +5,7 @@
   "title": "CreateEdgeSchema",
   "required": [
     "from",
-    "target",
-    "cost"
+    "target"
   ],
   "properties": {
     "from": {

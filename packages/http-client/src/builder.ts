@@ -10,7 +10,8 @@ export const builder = (baseUrl: string): HttpClient => {
   }: RequestParams): Promise<CustomResponse> => {
     try {
       const queryString = buildQueryString(queryParams);
-      const url = `${baseUrl}${path}${queryString ? `?${queryString}` : ''}`;
+      const url = `${baseUrl}/${path}${queryString ? `?${queryString}` : ''}`;
+      console.log('Requesting:', url);
       const fetchOptions = body
         ? {
             method: options?.method || 'GET',

@@ -11,6 +11,7 @@ export const fetchAndThrowIfNotFound = async (operation: Promise<Query<any, any>
 export const executeQuery = async <T>(query: any, errorMessage: string) => {
   try {
     const result = await query;
+    console.log(result);
     if (!result) {
       throw new Error(errorMessage);
     }

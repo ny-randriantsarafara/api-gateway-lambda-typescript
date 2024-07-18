@@ -13,7 +13,7 @@ export const mapGraphNode = (graphNode: GraphNodeDBModel) => {
   };
 };
 
-export const graphNodeRepository = (client: MongoDBClient<GraphNode>): GraphNodeRepository => ({
+export const graphNodeRepositoryBuilder = (client: MongoDBClient<GraphNode>): GraphNodeRepository => ({
   createGraphNode: async (graphNode: GraphNode) => {
     const { coordinates, ...rest } = graphNode;
     return mapGraphNode(await client.create({ ...rest, location: { type: 'Point', coordinates } }));
@@ -22,10 +22,8 @@ export const graphNodeRepository = (client: MongoDBClient<GraphNode>): GraphNode
     return (await client.getAll({})).map((item: GraphNodeDBModel) => mapGraphNode(item));
   },
   getById: async (id: string) => {
+    console.log(`Getting graph node by id = ${id}`);
     const graphNode = await client.getById(id);
-    if (typeof graphNode === 'undefined') {
-      return;
-    }
     return mapGraphNode(graphNode);
   },
   updateGraphNode: async (id: string, graphNode: GraphNode) => {
