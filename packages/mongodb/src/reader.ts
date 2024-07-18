@@ -29,4 +29,4 @@ export const reader = <T>(Model: MongooseModel<T>) => ({
   },
 });
 
-export type MongoDBReader<T> = ReturnType<typeof reader>;
+export type MongoDBReader<T> = ReturnType<typeof reader<T>>;

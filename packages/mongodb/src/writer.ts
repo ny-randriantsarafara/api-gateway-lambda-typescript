@@ -35,4 +35,4 @@ export const writer = <T>(Model: MongooseModel<T>) => ({
   },
 });
 
-export type MongoDBWriter<T> = ReturnType<typeof writer>;
+export type MongoDBWriter<T> = ReturnType<typeof writer<T>>;
