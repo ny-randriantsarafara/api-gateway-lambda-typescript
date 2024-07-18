@@ -21,7 +21,6 @@ edgeApi.register('POST', '/edges', withDatabaseConnection(dbClient.connect, data
 });
 
 edgeApi.register('PUT', '/edges/{id}', withDatabaseConnection(dbClient.connect, databaseUri), async request => {
-  console.log({ pathParameters: request.pathParameters, body: request.body });
   return updateEdgeUseCase(repository.updateEdge)(request.pathParameters?.id as string, request.body);
 });
 

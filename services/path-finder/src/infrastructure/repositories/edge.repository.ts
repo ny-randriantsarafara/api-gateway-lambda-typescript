@@ -1,26 +1,39 @@
 import { MongoDBClient } from '@packages/mongodb';
 import { Edge } from '../../domain/entities/edge.entity';
 import { EdgeRepository } from '../../domain/repositories/edge.repository';
+import { GraphNodeDBModel, mapGraphNode } from './graph-node.repository';
 
-const mapEdge = (edge: Edge & { _id: string }) => ({ ...edge, id: edge._id });
+const mapEdge = (edge: Edge & { _id: string }) => {
+  return {
+    ...edge,
+    id: edge._id,
+    from: mapGraphNode(edge.from as GraphNodeDBModel),
+    target: mapGraphNode(edge.target as GraphNodeDBModel),
+  };
+};
 
 export const edgeRepository = (client: MongoDBClient<Edge>): EdgeRepository => ({
   createEdge: async (edge: Edge) => {
-    return mapEdge(await client.create(edge));
+    return mapEdge(await client.create(edge, { hydrates: ['from', 'target'] }));
   },
   getEdges: async () => {
-    return (await client.getAll()).map((item: { _id: any } & Edge) => mapEdge(item));
+    return (await client.getAll({}, { hydrates: ['from', 'target'] })).map(
+      (
+        item: {
+          _id: any;
+        } & Edge
+      ) => mapEdge(item)
+    );
   },
   getById: async (id: string) => {
-    const edge = await client.getById(id);
+    const edge = await client.getById(id, { hydrates: ['from', 'target'] });
     if (typeof edge === 'undefined') {
       return;
     }
     return mapEdge(edge);
   },
   updateEdge: async (id: string, edge: Edge) => {
-    await client.update(id, edge);
-    const updatedEdge = await client.getById(id);
+    const updatedEdge = await client.update(id, edge, { hydrates: ['from', 'target'] });
     return mapEdge(updatedEdge);
   },
   deleteEdge: async (id: string) => {

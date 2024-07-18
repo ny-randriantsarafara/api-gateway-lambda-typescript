@@ -2,13 +2,16 @@ import { MongoDBClient } from '@packages/mongodb';
 import { GraphNode } from '../../domain/entities/graph-node.entity';
 import { GraphNodeRepository } from '../../domain/repositories/graph-node.repository';
 
-type GraphNodeDBModel = GraphNode & { _id: string; location: { type: string; coordinates: [number, number] } };
+export type GraphNodeDBModel = GraphNode & { _id: string; location: { type: string; coordinates: [number, number] } };
 
-const mapGraphNode = (graphNode: GraphNodeDBModel) => ({
-  ...graphNode,
-  id: graphNode._id,
-  coordinates: graphNode.location.coordinates,
-});
+export const mapGraphNode = (graphNode: GraphNodeDBModel) => {
+  return {
+    id: graphNode._id,
+    name: graphNode.name,
+    coordinates: graphNode.location.coordinates,
+    neighbors: graphNode.neighbors,
+  };
+};
 
 export const graphNodeRepository = (client: MongoDBClient<GraphNode>): GraphNodeRepository => ({
   createGraphNode: async (graphNode: GraphNode) => {
@@ -16,7 +19,7 @@ export const graphNodeRepository = (client: MongoDBClient<GraphNode>): GraphNode
     return mapGraphNode(await client.create({ ...rest, location: { type: 'Point', coordinates } }));
   },
   getGraphNodes: async () => {
-    return (await client.getAll()).map((item: GraphNodeDBModel) => mapGraphNode(item));
+    return (await client.getAll({})).map((item: GraphNodeDBModel) => mapGraphNode(item));
   },
   getById: async (id: string) => {
     const graphNode = await client.getById(id);
