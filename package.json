@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "services/*"
+    "services/*",
+    "client/*" 
   ],
   "devDependencies": {
     "@types/node": "^20.14.2",
@@ -13,7 +14,8 @@
   },
   "scripts": {
     "create:service": "lerna create $npm_config_service --loc services",
-    "create:package": "lerna create package"
+    "create:package": "lerna create package",
+    "create:client": "lerna create $npm_config_service --loc client"
   },
   "dependencies": {
     "dotenv": "^16.4.5"

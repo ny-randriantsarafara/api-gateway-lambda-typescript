@@ -1,0 +1,1835 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CreateDashgraphDashnodeLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-create-graph-node"
+      }
+    },
+    "GetDashgraphDashnodesLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-get-graph-nodes"
+      }
+    },
+    "GetDashgraphDashnodeDashbyDashidLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-get-graph-node-by-id"
+      }
+    },
+    "UpdateDashgraphDashnodeLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-update-graph-node"
+      }
+    },
+    "DeleteDashgraphDashnodeLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-delete-graph-node"
+      }
+    },
+    "CreateDashedgeLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-create-edge"
+      }
+    },
+    "GetDashedgesLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-get-edges"
+      }
+    },
+    "GetDashedgeDashbyDashidLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-get-edge-by-id"
+      }
+    },
+    "UpdateDashedgeLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-update-edge"
+      }
+    },
+    "DeleteDashedgeLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/path-finder-dev-ny-delete-edge"
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "path-finder",
+                  "dev-ny",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup",
+                    "logs:TagResource"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/path-finder-dev-ny*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/path-finder-dev-ny*:*:*"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "path-finder",
+              "dev-ny",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      }
+    },
+    "CreateDashgraphDashnodeLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/graph-node-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-create-graph-node",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CreateDashgraphDashnodeLogGroup"
+      ]
+    },
+    "GetDashgraphDashnodesLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/graph-node-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-get-graph-nodes",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetDashgraphDashnodesLogGroup"
+      ]
+    },
+    "GetDashgraphDashnodeDashbyDashidLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/graph-node-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-get-graph-node-by-id",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetDashgraphDashnodeDashbyDashidLogGroup"
+      ]
+    },
+    "UpdateDashgraphDashnodeLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/graph-node-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-update-graph-node",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "UpdateDashgraphDashnodeLogGroup"
+      ]
+    },
+    "DeleteDashgraphDashnodeLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/graph-node-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-delete-graph-node",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteDashgraphDashnodeLogGroup"
+      ]
+    },
+    "CreateDashedgeLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/edge-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-create-edge",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CreateDashedgeLogGroup"
+      ]
+    },
+    "GetDashedgesLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/edge-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-get-edges",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetDashedgesLogGroup"
+      ]
+    },
+    "GetDashedgeDashbyDashidLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/edge-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-get-edge-by-id",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetDashedgeDashbyDashidLogGroup"
+      ]
+    },
+    "UpdateDashedgeLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/edge-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-update-edge",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "UpdateDashedgeLogGroup"
+      ]
+    },
+    "DeleteDashedgeLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/path-finder/dev-ny/1721247685550-2024-07-17T20:21:25.550Z/path-finder.zip"
+        },
+        "Handler": "src/infrastructure/api/edge-api.handler",
+        "Runtime": "nodejs20.x",
+        "FunctionName": "path-finder-dev-ny-delete-edge",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "SERVICE_STAGE": "dev-ny",
+            "REGION": "eu-west-1",
+            "DATABASE_URI": "mongodb+srv://awslabsdev:;asmIy0gnhpl@aws-labs.gvoqiqe.mongodb.net/path-finder?retryWrites=true&w=majority&appName=aws-labs",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteDashedgeLogGroup"
+      ]
+    },
+    "CreateDashgraphDashnodeLambdaVersiondwFOcgTIRRiHxFcLwE2VjvkSm1VZqEkSR0NtAG1AtrE": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CreateDashgraphDashnodeLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "GetDashgraphDashnodesLambdaVersion9aG8JlBxWP7ANlGW4eXrqQHnv5HeohkLX66L0bswg": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetDashgraphDashnodesLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "GetDashgraphDashnodeDashbyDashidLambdaVersione126PoscJErikkwBzzM1ysNxqcuxgDGCw9ZsLa0Dw": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetDashgraphDashnodeDashbyDashidLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "UpdateDashgraphDashnodeLambdaVersionw7RrNVXvJ6PUDLAOsT2CXP9qNz4jkPiqtuF2tVOR38g": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UpdateDashgraphDashnodeLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "DeleteDashgraphDashnodeLambdaVersiont04gtP9VlTPCnE5PvmWSsiY89p6kppUzdbI7gSCRgQ": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteDashgraphDashnodeLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "CreateDashedgeLambdaVersionvSQf1zSYKRDhWaBxhsI4CtZXVxdirobiQHc89j22PE": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CreateDashedgeLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "GetDashedgesLambdaVersionYY6YfIcOEt9P3Vtr1Go2dHjbwOPLU2hCYggkUGnxts": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetDashedgesLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "GetDashedgeDashbyDashidLambdaVersionAgfBx9QTLTuFGsCyJ414BRIvrreI8PzzzOuuUtR2DI": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetDashedgeDashbyDashidLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "UpdateDashedgeLambdaVersionWc1s9g46vWdvb2GX06h2reqTTXd0RokKy1EdFILVM": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UpdateDashedgeLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "DeleteDashedgeLambdaVersionA95gSEsgdkpnzXPWhhPC9aTUxWMwONreR8fFNrXxecY": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteDashedgeLambdaFunction"
+        },
+        "CodeSha256": "fS04F6JDXSrAI8A89Q2Kc38DgXIFn/3N/D5IXeWmH18="
+      }
+    },
+    "ApiGatewayRestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "dev-ny-path-finder",
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE"
+          ]
+        },
+        "Policy": ""
+      }
+    },
+    "ApiGatewayResourceGraphDashnodes": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "graph-nodes",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceGraphDashnodesIdVar": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceGraphDashnodes"
+        },
+        "PathPart": "{id}",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceEdges": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "edges",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceEdgesIdVar": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceEdges"
+        },
+        "PathPart": "{id}",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodGraphDashnodesPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceGraphDashnodes"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "CreateDashgraphDashnodeLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [],
+        "RequestValidatorId": {
+          "Ref": "ApiGatewayPathfinderRequestValidator"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "ApiGatewayMethodGraphDashnodesPostApplicationJsonModel"
+          }
+        }
+      },
+      "DependsOn": [
+        "CreateDashgraphDashnodeLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodGraphDashnodesGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceGraphDashnodes"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetDashgraphDashnodesLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "GetDashgraphDashnodesLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodGraphDashnodesIdVarGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceGraphDashnodesIdVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetDashgraphDashnodeDashbyDashidLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "GetDashgraphDashnodeDashbyDashidLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodGraphDashnodesIdVarPut": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "PUT",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceGraphDashnodesIdVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "UpdateDashgraphDashnodeLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [],
+        "RequestValidatorId": {
+          "Ref": "ApiGatewayPathfinderRequestValidator"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "ApiGatewayMethodGraphDashnodesIdVarPutApplicationJsonModel"
+          }
+        }
+      },
+      "DependsOn": [
+        "UpdateDashgraphDashnodeLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodGraphDashnodesIdVarDelete": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "DELETE",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceGraphDashnodesIdVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "DeleteDashgraphDashnodeLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "DeleteDashgraphDashnodeLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodEdgesPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceEdges"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "CreateDashedgeLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [],
+        "RequestValidatorId": {
+          "Ref": "ApiGatewayPathfinderRequestValidator"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "ApiGatewayMethodEdgesPostApplicationJsonModel"
+          }
+        }
+      },
+      "DependsOn": [
+        "CreateDashedgeLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodEdgesGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceEdges"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetDashedgesLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "GetDashedgesLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodEdgesIdVarGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceEdgesIdVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetDashedgeDashbyDashidLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "GetDashedgeDashbyDashidLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodEdgesIdVarPut": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "PUT",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceEdgesIdVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "UpdateDashedgeLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [],
+        "RequestValidatorId": {
+          "Ref": "ApiGatewayPathfinderRequestValidator"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "ApiGatewayMethodEdgesIdVarPutApplicationJsonModel"
+          }
+        }
+      },
+      "DependsOn": [
+        "UpdateDashedgeLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodEdgesIdVarDelete": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "DELETE",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceEdgesIdVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "DeleteDashedgeLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "DeleteDashedgeLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayPathfinderRequestValidator": {
+      "Type": "AWS::ApiGateway::RequestValidator",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ValidateRequestBody": true,
+        "ValidateRequestParameters": true,
+        "Name": "path-finder-dev-ny | Validate request body and querystring parameters"
+      }
+    },
+    "ApiGatewayMethodGraphDashnodesPostApplicationJsonModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "definitions": {},
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "type": "object",
+          "title": "CreateGraphNodeSchema",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "neighbors": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    "ApiGatewayMethodGraphDashnodesIdVarPutApplicationJsonModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "definitions": {},
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "type": "object",
+          "title": "UpdateGraphNodeSchema",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "neighbors": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    "ApiGatewayMethodEdgesPostApplicationJsonModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "definitions": {},
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "type": "object",
+          "title": "CreateEdgeSchema",
+          "required": [
+            "from",
+            "target",
+            "cost"
+          ],
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            },
+            "cost": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "ApiGatewayMethodEdgesIdVarPutApplicationJsonModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "definitions": {},
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "type": "object",
+          "title": "UpdateEdgeSchema",
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            },
+            "cost": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "ApiGatewayDeployment1721247682546": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "StageName": "dev-ny"
+      },
+      "DependsOn": [
+        "ApiGatewayMethodGraphDashnodesPost",
+        "ApiGatewayMethodGraphDashnodesGet",
+        "ApiGatewayMethodGraphDashnodesIdVarGet",
+        "ApiGatewayMethodGraphDashnodesIdVarPut",
+        "ApiGatewayMethodGraphDashnodesIdVarDelete",
+        "ApiGatewayMethodEdgesPost",
+        "ApiGatewayMethodEdgesGet",
+        "ApiGatewayMethodEdgesIdVarGet",
+        "ApiGatewayMethodEdgesIdVarPut",
+        "ApiGatewayMethodEdgesIdVarDelete"
+      ]
+    },
+    "CreateDashgraphDashnodeLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "CreateDashgraphDashnodeLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "GetDashgraphDashnodesLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetDashgraphDashnodesLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "GetDashgraphDashnodeDashbyDashidLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetDashgraphDashnodeDashbyDashidLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "UpdateDashgraphDashnodeLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UpdateDashgraphDashnodeLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "DeleteDashgraphDashnodeLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteDashgraphDashnodeLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "CreateDashedgeLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "CreateDashedgeLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "GetDashedgesLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetDashedgesLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "GetDashedgeDashbyDashidLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetDashedgeDashbyDashidLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "UpdateDashedgeLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UpdateDashedgeLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "DeleteDashedgeLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteDashedgeLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-ServerlessDeploymentBucketName"
+      }
+    },
+    "CreateDashgraphDashnodeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CreateDashgraphDashnodeLambdaVersiondwFOcgTIRRiHxFcLwE2VjvkSm1VZqEkSR0NtAG1AtrE"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-CreateDashgraphDashnodeLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetDashgraphDashnodesLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetDashgraphDashnodesLambdaVersion9aG8JlBxWP7ANlGW4eXrqQHnv5HeohkLX66L0bswg"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-GetDashgraphDashnodesLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetDashgraphDashnodeDashbyDashidLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetDashgraphDashnodeDashbyDashidLambdaVersione126PoscJErikkwBzzM1ysNxqcuxgDGCw9ZsLa0Dw"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-GetDashgraphDashnodeDashbyDashidLambdaFunctionQualifiedArn"
+      }
+    },
+    "UpdateDashgraphDashnodeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "UpdateDashgraphDashnodeLambdaVersionw7RrNVXvJ6PUDLAOsT2CXP9qNz4jkPiqtuF2tVOR38g"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-UpdateDashgraphDashnodeLambdaFunctionQualifiedArn"
+      }
+    },
+    "DeleteDashgraphDashnodeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteDashgraphDashnodeLambdaVersiont04gtP9VlTPCnE5PvmWSsiY89p6kppUzdbI7gSCRgQ"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-DeleteDashgraphDashnodeLambdaFunctionQualifiedArn"
+      }
+    },
+    "CreateDashedgeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CreateDashedgeLambdaVersionvSQf1zSYKRDhWaBxhsI4CtZXVxdirobiQHc89j22PE"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-CreateDashedgeLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetDashedgesLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetDashedgesLambdaVersionYY6YfIcOEt9P3Vtr1Go2dHjbwOPLU2hCYggkUGnxts"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-GetDashedgesLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetDashedgeDashbyDashidLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetDashedgeDashbyDashidLambdaVersionAgfBx9QTLTuFGsCyJ414BRIvrreI8PzzzOuuUtR2DI"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-GetDashedgeDashbyDashidLambdaFunctionQualifiedArn"
+      }
+    },
+    "UpdateDashedgeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "UpdateDashedgeLambdaVersionWc1s9g46vWdvb2GX06h2reqTTXd0RokKy1EdFILVM"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-UpdateDashedgeLambdaFunctionQualifiedArn"
+      }
+    },
+    "DeleteDashedgeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteDashedgeLambdaVersionA95gSEsgdkpnzXPWhhPC9aTUxWMwONreR8fFNrXxecY"
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-DeleteDashedgeLambdaFunctionQualifiedArn"
+      }
+    },
+    "ServiceEndpoint": {
+      "Description": "URL of the service endpoint",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "ApiGatewayRestApi"
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/dev-ny"
+          ]
+        ]
+      },
+      "Export": {
+        "Name": "sls-path-finder-dev-ny-ServiceEndpoint"
+      }
+    }
+  }
+}
