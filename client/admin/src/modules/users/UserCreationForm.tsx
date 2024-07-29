@@ -1,7 +1,7 @@
 import React from "react";
 import { Create, required, SimpleForm, TextInput } from "react-admin";
 
-export const UserForm = () => (
+export const UserCreationForm = () => (
   <Create>
     <SimpleForm>
       <TextInput name="firstName" source="firstName" validate={[required()]} />
