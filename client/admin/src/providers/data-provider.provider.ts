@@ -64,6 +64,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     const { headers, json } = await httpClient(url);
     return {
       data: json,
+      total: json.length
     };
   },
   async getMany<RecordType extends RaRecord<Identifier>>(

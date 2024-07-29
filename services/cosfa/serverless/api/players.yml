@@ -4,7 +4,16 @@ get-players:
     - http:
         path: /players
         method: get
-        cors: true
+        cors:
+          origin: '*'
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false
 get-player-by-id:
   handler: src/infrastructure/api/players-api.handler
   events:
