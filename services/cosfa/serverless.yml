@@ -3,7 +3,8 @@ org: awslabs
 # "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 app: aws-labs-api
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: cosfa
+service: cosfa-api
+
 custom:
   stage: ${env:SERVICE_STAGE}
   region: ${env:REGION}

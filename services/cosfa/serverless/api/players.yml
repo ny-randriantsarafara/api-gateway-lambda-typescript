@@ -4,6 +4,9 @@ get-players:
     - http:
         path: /players
         method: get
+        cors:
+          origin: '*'
+          headers: '*'
 get-player-by-id:
   handler: src/infrastructure/api/players-api.handler
   events:
@@ -14,6 +17,9 @@ get-player-by-id:
           parameters:
             paths:
               id: true
+        cors:
+          origin: '*'
+          headers: '*'
 create-player:
   handler: src/infrastructure/api/players-api.handler
   events:
@@ -23,6 +29,9 @@ create-player:
         request:
           schemas:
             application/json: ${file(serverless/api/schemas/create-player.json)}
+        cors:
+          origin: '*'
+          headers: '*'
 update-player:
   handler: src/infrastructure/api/players-api.handler
   events:
@@ -35,6 +44,9 @@ update-player:
               id: true
           schemas:
             application/json: ${file(serverless/api/schemas/update-player.json)}
+        cors:
+          origin: '*'
+          headers: '*'
 delete-player:
   handler: src/infrastructure/api/players-api.handler
   events:
@@ -45,3 +57,6 @@ delete-player:
           parameters:
             paths:
               id: true
+        cors:
+          origin: '*'
+          headers: '*'
