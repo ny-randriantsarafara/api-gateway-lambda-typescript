@@ -1,7 +1,7 @@
 import React from "react";
 import { Edit, required, SimpleForm, TextInput } from "react-admin";
 
-export const UserModificationForm = () => (
+export const UserEdit = () => (
   <Edit>
     <SimpleForm>
       <TextInput disabled label="Id" source="id" name="id" />

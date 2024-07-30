@@ -4,11 +4,11 @@ import { Player } from '../../domain/entities/player.entity';
 
 const removeId = ({ _id, ...player }: Player & { _id: any }) => player;
 
-export const playerRepository = (client: MongoDBClient<Player>): PlayerRepository => ({
+export const playerRepository = (client: MongoDBClient): PlayerRepository => ({
   createPlayer: async (player: Player) => {
     return removeId(await client.create(player));
   },
-  getPlayers: async (filters?: Filters) => {
+  getPlayers: async (filters: Filters = {}) => {
     return (await client.getAll(filters)).map((item: { _id: any; } & Player) => removeId(item));
   },
   getById: async (id: string) => {
