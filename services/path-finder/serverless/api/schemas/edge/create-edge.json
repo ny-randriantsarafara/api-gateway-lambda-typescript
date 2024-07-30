@@ -1,0 +1,21 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CreateEdgeSchema",
+  "required": [
+    "from",
+    "target"
+  ],
+  "properties": {
+    "from": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "number"
+    }
+  }
+}

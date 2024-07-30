@@ -1,24 +1,33 @@
 import { Model as MongooseModel, UpdateQuery } from 'mongoose';
-import { fetchAndThrowIfNotFound } from './utils';
+import { executeQuery, fetchAndThrowIfNotFound } from './utils';
+import { QueryOptions } from './reader';
 
-export const writer = <T>(Model: MongooseModel<T>) => ({
-  create: async (data: T) => {
+export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
+  create: async (data: any, options?: QueryOptions) => {
     try {
       const dbModel = new Model(data);
       const result = await dbModel.save();
-      return result.toJSON();
+      let query = Model.findById(result._id);
+      if (options?.hydrates) {
+        query = query.populate(options.hydrates);
+      }
+      return executeQuery(query, 'Document not found after creation');
     } catch (error) {
       console.error('An error occurred while creating document', error);
       throw error;
     }
   },
-  update: async (id: string, data: UpdateQuery<T>) => {
-    const dbModel = await fetchAndThrowIfNotFound(Model.findById(id), `Document with id ${id} not found`);
+  update: async (id: string, data: UpdateQuery<any>, options?: QueryOptions) => {
+    let dbModel = await fetchAndThrowIfNotFound(Model.findById(id), `Document with id ${id} not found`);
     for (const key in data) {
       dbModel[key] = data[key];
     }
-    return dbModel.save();
-
+    await dbModel.save();
+    let query = Model.findById(id);
+    if (options?.hydrates) {
+      query = query.populate(options.hydrates);
+    }
+    return executeQuery(query, `Document with id ${id} not found after update`);
   },
   delete: async (id: string) => {
     const dbModel = await fetchAndThrowIfNotFound(Model.findById(id), `Document with id ${id} not found`);
@@ -26,4 +35,8 @@ export const writer = <T>(Model: MongooseModel<T>) => ({
   },
 });
 
-export type MongoDBWriter<T> = ReturnType<typeof writer>;
+export type MongoDBWriter = {
+    create: (data: any, options?: QueryOptions) => Promise<any>;
+    update: (id: string, data: UpdateQuery<any>, options?: QueryOptions) => Promise<any>;
+    delete: (id: string) => Promise<void>;
+};

@@ -1,20 +1,44 @@
 import { HttpRequest, HttpResponse, Middleware } from './types';
 
 // TODO: Return the correct status code according to the error
-export const api = (...middlewares: Middleware[]) => {
-  return async (input: HttpRequest): Promise<HttpResponse> => {
-    let response;
+export const api = () => {
+  const registeredMiddlewares = new Map<string, Middleware[]>();
+
+  const register = (method: string, uri: string, ...middlewares: Middleware[]) => {
+    registeredMiddlewares.set(`${method}${uri}`, middlewares);
+  };
+
+  const execute = async (input: HttpRequest): Promise<HttpResponse> => {
+    const routeMiddlewares = registeredMiddlewares.get(`${input.httpMethod}${input.resource}`);
+
+    if (typeof routeMiddlewares === 'undefined') {
+      throw new Error('Route is not registered');
+    }
+
+    let request;
+
     try {
-      response = { ...input, body: JSON.parse(input.body as string) };
+      request = { ...input, body: JSON.parse(input.body as string) };
     } catch (error) {
       return { statusCode: 400, body: 'Invalid JSON input' };
     }
-    for (const middleware of middlewares) {
-      response = await middleware(response);
+
+    try {
+      request = { ...input, body: JSON.parse(input.body as string) };
+    } catch (error) {
+      return { statusCode: 400, body: 'Invalid JSON input' };
+    }
+    for (const middleware of routeMiddlewares) {
+      request = await middleware(request);
     }
     return {
       statusCode: 200,
-      body: JSON.stringify(response),
+      body: JSON.stringify(request),
     };
+  };
+
+  return {
+    register,
+    execute,
   };
 };

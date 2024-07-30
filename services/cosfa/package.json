@@ -1,0 +1,24 @@
+{
+  "name": "@services/cosfa",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "license": "ISC",
+  "scripts": {
+    "start": "serverless dev",
+    "deploy": "serverless deploy",
+    "test": "echo test"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.140",
+    "serverless": "4.0.24"
+  },
+  "dependencies": {
+    "@packages/api": "^0.0.0",
+    "@packages/mongodb": "^0.0.0",
+    "@packages/shared": "^0.0.0",
+    "aws-lambda": "^1.0.7",
+    "joi": "^17.13.3",
+    "mongoose": "^8.5.1",
+    "uuid": "^10.0.0"
+  }
+}

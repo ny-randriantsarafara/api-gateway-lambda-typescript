@@ -6,4 +6,4 @@ export type HttpResponse = APIGatewayProxyResult;
 export type Middleware = (input: HttpRequest) => Promise<any>;
 
 // Database connection related types
-export type Connect = <ConnectionResponse>(databaseUri: string) => Promise<ConnectionResponse>;
+export type Connect<ConnectionResponse> = (databaseUri: string) => Promise<ConnectionResponse>;

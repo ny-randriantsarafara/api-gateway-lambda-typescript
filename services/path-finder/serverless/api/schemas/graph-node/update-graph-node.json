@@ -1,0 +1,14 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "UpdateGraphNodeSchema",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "neighbors": {
+      "type": "array"
+    }
+  }
+}

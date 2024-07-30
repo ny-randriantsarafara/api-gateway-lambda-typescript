@@ -1,0 +1,40 @@
+create-graph-node:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes
+        method: post
+        request:
+          schemas:
+            application/json: ${file(serverless/api/schemas/graph-node/create-graph-node.json)}
+
+get-graph-nodes:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes
+        method: get
+
+get-graph-node-by-id:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes/{id}
+        method: get
+
+update-graph-node:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes/{id}
+        method: put
+        request:
+          schemas:
+            application/json: ${file(serverless/api/schemas/graph-node/update-graph-node.json)}
+
+delete-graph-node:
+  handler: src/infrastructure/api/graph-node-api.handler
+  events:
+    - http:
+        path: /graph-nodes/{id}
+        method: delete

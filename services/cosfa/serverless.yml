@@ -1,0 +1,18 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: awslabs
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: aws-labs-api
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: cosfa
+custom:
+  stage: ${env:SERVICE_STAGE}
+  region: ${env:REGION}
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  environment: ${file(serverless-env.yml)}
+
+functions:
+  - ${file(serverless/api/players.yml)}
