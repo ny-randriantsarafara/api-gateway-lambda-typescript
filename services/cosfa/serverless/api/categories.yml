@@ -1,22 +1,10 @@
-get-categories:
+categories-api:
   handler: src/infrastructure/api/categories-api.handler
   events:
     - http:
         path: /categories
         method: get
-        cors:
-          origin: '*'
-          headers:
-            - Content-Type
-            - X-Amz-Date
-            - Authorization
-            - X-Api-Key
-            - X-Amz-Security-Token
-            - X-Amz-User-Agent
-          allowCredentials: false
-get-category-by-id:
-  handler: src/infrastructure/api/categories-api.handler
-  events:
+        cors: true
     - http:
         path: /categories/{id}
         method: get
@@ -25,19 +13,13 @@ get-category-by-id:
             paths:
               id: true
         cors: true
-create-category:
-  handler: src/infrastructure/api/categories-api.handler
-  events:
     - http:
         path: /categories
         method: post
         request:
           schemas:
-            application/json: ${file(serverless/api/schemas/create-category.json)}
+            application/json: ${file(serverless/api/schemas/create-player.json)}
         cors: true
-update-category:
-  handler: src/infrastructure/api/categories-api.handler
-  events:
     - http:
         path: /categories/{id}
         method: put
@@ -46,11 +28,8 @@ update-category:
             paths:
               id: true
           schemas:
-            application/json: ${file(serverless/api/schemas/update-category.json)}
+            application/json: ${file(serverless/api/schemas/update-player.json)}
         cors: true
-delete-category:
-  handler: src/infrastructure/api/categories-api.handler
-  events:
     - http:
         path: /categories/{id}
         method: delete

@@ -12,7 +12,7 @@ const mapEdge = (edge: Edge & { _id: string }) => {
   };
 };
 
-export const edgeRepositoryBuilder = (client: MongoDBClient<Edge>): EdgeRepository => ({
+export const edgeRepositoryBuilder = (client: MongoDBClient): EdgeRepository => ({
   createEdge: async (edge: Edge) => {
     return mapEdge(await client.create(edge, { hydrates: ['from', 'target'] }));
   },

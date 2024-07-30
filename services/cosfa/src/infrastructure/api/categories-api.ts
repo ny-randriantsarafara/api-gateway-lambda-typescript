@@ -2,13 +2,12 @@ import { config } from '@packages/shared';
 import { createMongoDBClient } from '@packages/mongodb';
 import { api, HttpRequest, withDatabaseConnection } from '@packages/api';
 import { CategoryModel } from '../schemas/category.schema';
-import { categoryRepository } from '../repositories/category.repository';
-import { Category } from '../../domain/entities/category.entity';
+import { categoryRepositoryBuilder } from '../repositories/category.repository';
 
 const { databaseUri } = config();
 
 const client = createMongoDBClient(CategoryModel);
-const repository = categoryRepository(client);
+const categoryRepository = categoryRepositoryBuilder(client);
 
 const categoriesApi = api();
 
@@ -17,11 +16,8 @@ categoriesApi.register(
   '/categories',
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
-    const category = Category.create({
-      ...request.body,
-    }) as Category;
     try {
-      return repository.createCategory(category);
+      return categoryRepository.createCategory(request.body);
     } catch (error) {
       console.error(error);
       throw error;
@@ -35,7 +31,7 @@ categoriesApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-      return repository.getById(request.pathParameters?.id as string);
+      return categoryRepository.getById(request.pathParameters?.id as string);
     } catch (error) {
       throw error;
     }
@@ -49,7 +45,7 @@ categoriesApi.register(
   async (request: HttpRequest) => {
     try {
       void request;
-      return repository.getCategories({});
+      return categoryRepository.getCategories({});
     } catch (error) {
       throw error;
     }
@@ -62,7 +58,7 @@ categoriesApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-      return repository.updateCategory(request.pathParameters?.id as string, {
+      return categoryRepository.updateCategory(request.pathParameters?.id as string, {
         ...request.body,
       });
     } catch (error) {
@@ -77,7 +73,7 @@ categoriesApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-      await repository.deleteCategory(request.pathParameters?.id as string);
+      await categoryRepository.deleteCategory(request.pathParameters?.id as string);
     } catch (error) {
       throw error;
     }

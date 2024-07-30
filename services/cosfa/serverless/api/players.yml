@@ -1,22 +1,10 @@
-get-players:
+players-api:
   handler: src/infrastructure/api/players-api.handler
   events:
     - http:
         path: /players
         method: get
-        cors:
-          origin: '*'
-          headers:
-            - Content-Type
-            - X-Amz-Date
-            - Authorization
-            - X-Api-Key
-            - X-Amz-Security-Token
-            - X-Amz-User-Agent
-          allowCredentials: false
-get-player-by-id:
-  handler: src/infrastructure/api/players-api.handler
-  events:
+        cors: true
     - http:
         path: /players/{id}
         method: get
@@ -25,9 +13,6 @@ get-player-by-id:
             paths:
               id: true
         cors: true
-create-player:
-  handler: src/infrastructure/api/players-api.handler
-  events:
     - http:
         path: /players
         method: post
@@ -35,9 +20,6 @@ create-player:
           schemas:
             application/json: ${file(serverless/api/schemas/create-player.json)}
         cors: true
-update-player:
-  handler: src/infrastructure/api/players-api.handler
-  events:
     - http:
         path: /players/{id}
         method: put
@@ -48,9 +30,6 @@ update-player:
           schemas:
             application/json: ${file(serverless/api/schemas/update-player.json)}
         cors: true
-delete-player:
-  handler: src/infrastructure/api/players-api.handler
-  events:
     - http:
         path: /players/{id}
         method: delete

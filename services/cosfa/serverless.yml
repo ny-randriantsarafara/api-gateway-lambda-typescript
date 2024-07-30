@@ -12,7 +12,7 @@ provider:
   name: aws
   runtime: nodejs20.x
   stage: ${self:custom.stage}
-  region: ${self:custom.region}
+  region: eu-west-1
   environment: ${file(serverless-env.yml)}
 
 functions:

@@ -1,18 +1,9 @@
-import { v4 } from 'uuid';
-export class BaseEntity {
-  id!: string;
-
-  constructor(data: Partial<BaseEntity>) {
-    Object.assign(this, data);
-  }
-  static generateId() {
-    return v4();
+export abstract class BaseEntity<T> {
+  protected constructor(options: Partial<T>) {
+    Object.assign(this, options);
   }
 
-  static create(data: Partial<BaseEntity>) {
-    return new BaseEntity({
-      id: data.id || BaseEntity.generateId(),
-      ...data,
-    });
-  };
+  static create<T, D>(this: new (options: D) => T, data: D): T {
+    return new this(data);
+  }
 }
