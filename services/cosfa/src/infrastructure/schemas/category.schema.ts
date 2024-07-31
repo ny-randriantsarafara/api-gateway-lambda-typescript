@@ -9,6 +9,6 @@ const CategorySchema = new Schema({
   description: { type: String },
 });
 
-CategorySchema.path('id');
+export const CATEGORY = 'Category';
 
-export const CategoryModel = model<Category>('Category', CategorySchema);
+export const CategoryModel = model<Category>(CATEGORY, CategorySchema);
