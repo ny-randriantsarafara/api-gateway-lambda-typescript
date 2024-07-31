@@ -7,12 +7,12 @@ import { deletePlayerUseCase } from '../../application/use-cases/delete-player.u
 import { getPlayerByIdUseCase } from '../../application/use-cases/get-player-by-id.use-case';
 import { getPlayersUseCase } from '../../application/use-cases/get-players.use-case';
 import { updatePlayerUseCase } from '../../application/use-cases/update-player.use-case';
-import { playerRepositoryBuilder } from '../repositories/player.repository';
+import { playerRepository } from '../repositories/player.repository';
 
 const { databaseUri } = config();
 
 const client = createMongoDBClient(PlayerModel);
-const playerRepository = playerRepositoryBuilder(client);
+const repository = playerRepository(client);
 
 const playersApi = api();
 
@@ -20,21 +20,21 @@ playersApi.register(
   'POST',
   '/players',
   withDatabaseConnection(client.connect, databaseUri),
-  async (request: HttpRequest) => createPlayerUseCase(playerRepository.createPlayer)(request.body)
+  async (request: HttpRequest) => createPlayerUseCase(repository.create)(request.body)
 );
 
 playersApi.register(
   'GET',
   '/players/{id}',
   withDatabaseConnection(client.connect, databaseUri),
-  async (request: HttpRequest) => getPlayerByIdUseCase(playerRepository.getById)(request.pathParameters?.id as string)
+  async (request: HttpRequest) => getPlayerByIdUseCase(repository.getById)(request.pathParameters?.id as string)
 );
 
 playersApi.register(
   'GET',
   '/players',
   withDatabaseConnection(client.connect, databaseUri),
-  async (request: HttpRequest) => getPlayersUseCase(playerRepository.getPlayers)({})
+  async (request: HttpRequest) => getPlayersUseCase(repository.get)({})
 );
 
 playersApi.register(
@@ -42,15 +42,14 @@ playersApi.register(
   '/players/{id}',
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) =>
-    updatePlayerUseCase(playerRepository.updatePlayer)(request.pathParameters?.id as string, request.body)
+    updatePlayerUseCase(repository.update)(request.pathParameters?.id as string, request.body)
 );
 
 playersApi.register(
   'DELETE',
   '/players/{id}',
   withDatabaseConnection(client.connect, databaseUri),
-  async (request: HttpRequest) =>
-    deletePlayerUseCase(playerRepository.deletePlayer)(request.pathParameters?.id as string)
+  async (request: HttpRequest) => deletePlayerUseCase(repository.delete)(request.pathParameters?.id as string)
 );
 
 export const handler = async (input: HttpRequest) => playersApi.execute(input);

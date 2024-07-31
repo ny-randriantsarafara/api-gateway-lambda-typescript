@@ -1,16 +1,16 @@
-import { Player } from '../entities/player.entity';
+import { CreatePlayerDTO, Player } from '../entities/player.entity';
 
-export type Filters = Record<string, any>;
-export type GetPlayers = (filters?: Filters) => Promise<Player[]>;
-export type GetPlayerById = (id: string) => Promise<Player>;
-export type CreatePlayer = (data: Player) => Promise<Player>;
-export type UpdatePlayer = (id: string, data: Player) => Promise<Player>;
-export type DeletePlayer = (id: string) => Promise<void>;
+export type PlayerFilters = Record<string, any>;
+export type Get = (filters?: PlayerFilters) => Promise<Player[]>;
+export type GetById = (id: string) => Promise<Player>;
+export type Create = (data: CreatePlayerDTO) => Promise<Player>;
+export type Update = (id: string, data: CreatePlayerDTO) => Promise<Player>;
+export type Delete = (id: string) => Promise<void>;
 
 export type PlayerRepository = {
-  getPlayers: GetPlayers;
-  createPlayer: CreatePlayer;
-  getById: GetPlayerById;
-  updatePlayer: UpdatePlayer;
-  deletePlayer: DeletePlayer;
+  get: Get;
+  create: Create;
+  getById: GetById;
+  update: Update;
+  delete: Delete;
 };

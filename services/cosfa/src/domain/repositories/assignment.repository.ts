@@ -8,9 +8,9 @@ export type UpdateAssignment = (id: string, data: Assignment) => Promise<Assignm
 export type DeleteAssignment = (id: string) => Promise<void>;
 
 export type AssignmentRepository = {
-  getCategories: GetCategories;
-  createAssignment: CreateAssignment;
+  get: GetCategories;
+  create: CreateAssignment;
   getById: GetAssignmentById;
-  updateAssignment: UpdateAssignment;
-  deleteAssignment: DeleteAssignment;
+  update: UpdateAssignment;
+  delete: DeleteAssignment;
 };
