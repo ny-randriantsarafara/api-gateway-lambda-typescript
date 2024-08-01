@@ -22,7 +22,7 @@ import {
   UpdateManyResult,
   UpdateParams,
   UpdateResult,
-} from "react-admin";
+} from 'react-admin';
 
 const httpClient = fetchUtils.fetchJson;
 
@@ -32,7 +32,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     params: CreateParams
   ): Promise<CreateResult<ResultRecordType>> {
     const { json } = await httpClient(`${baseApiUrl}/${resource}`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(params.data),
     });
     return { data: json };
@@ -41,12 +41,9 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     resource: string,
     params: DeleteParams<RecordType>
   ): Promise<DeleteResult<RecordType>> {
-    const { json } = await httpClient(
-      `${baseApiUrl}/${resource}/${params.id}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const { json } = await httpClient(`${baseApiUrl}/${resource}/${params.id}`, {
+      method: 'DELETE',
+    });
     return { data: json };
   },
   async deleteMany<RecordType extends RaRecord<Identifier>>(
@@ -104,13 +101,10 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     resource: string,
     params: UpdateParams
   ): Promise<UpdateResult<RecordType>> {
-    const { json } = await httpClient(
-      `${baseApiUrl}/${resource}/${params.id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(params.data),
-      }
-    );
+    const { json } = await httpClient(`${baseApiUrl}/${resource}/${params.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(params.data),
+    });
     return { data: json };
   },
   async updateMany<RecordType extends RaRecord<Identifier>>(

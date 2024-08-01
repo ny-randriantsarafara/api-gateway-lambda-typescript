@@ -1,13 +1,5 @@
-import React from "react";
-import {
-  Create,
-  DateInput,
-  NumberInput,
-  required,
-  SelectInput,
-  SimpleForm,
-  TextInput,
-} from "react-admin";
+import React from 'react';
+import { Create, DateInput, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin';
 
 export const CategoryCreate = () => (
   <Create>
@@ -17,8 +9,8 @@ export const CategoryCreate = () => (
       <SelectInput
         source="gender"
         choices={[
-          { id: "G", name: "Garçon" },
-          { id: "F", name: "Fille" },
+          { id: 'G', name: 'Garçon' },
+          { id: 'F', name: 'Fille' },
         ]}
       />
       <TextInput name="description" source="description" multiline />

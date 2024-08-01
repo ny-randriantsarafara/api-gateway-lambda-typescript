@@ -1,5 +1,5 @@
-import React from "react";
-import { Edit, required, SimpleForm, TextInput } from "react-admin";
+import React from 'react';
+import { Edit, required, SimpleForm, TextInput } from 'react-admin';
 
 export const UserEdit = () => (
   <Edit>

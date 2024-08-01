@@ -1,12 +1,5 @@
-import React from "react";
-import {
-  Edit,
-  NumberInput,
-  required,
-  SelectInput,
-  SimpleForm,
-  TextInput,
-} from "react-admin";
+import React from 'react';
+import { Edit, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin';
 
 export const CategoryEdit = () => (
   <Edit>
@@ -17,8 +10,8 @@ export const CategoryEdit = () => (
       <SelectInput
         source="gender"
         choices={[
-          { id: "G", name: "Garçon" },
-          { id: "F", name: "Fille" },
+          { id: 'G', name: 'Garçon' },
+          { id: 'F', name: 'Fille' },
         ]}
       />
       <TextInput name="description" source="description" multiline />

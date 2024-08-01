@@ -1,5 +1,5 @@
-import React from "react";
-import { Create, required, SimpleForm, TextInput } from "react-admin";
+import React from 'react';
+import { Create, required, SimpleForm, TextInput } from 'react-admin';
 
 export const UserCreate = () => (
   <Create>

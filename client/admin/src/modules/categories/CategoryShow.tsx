@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Datagrid,
   DateField,
@@ -7,7 +7,7 @@ import {
   Show,
   SimpleShowLayout,
   TextField,
-} from "react-admin";
+} from 'react-admin';
 
 const AssignedPlayers = () => {
   return (
