@@ -62,8 +62,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
       typeof params.sort.field !== 'undefined' &&
       typeof params.sort.order !== 'undefined'
     ) {
-      url.searchParams.append('sort.field', params.sort.field);
-      url.searchParams.append('sort.order', params.sort.order.toLowerCase());
+      url.searchParams.append(`${params.sort.field}.sort`, params.sort.order.toLowerCase());
     }
     const { headers, json } = await httpClient(url);
     return {

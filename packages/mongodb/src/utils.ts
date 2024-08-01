@@ -32,29 +32,29 @@ export const buildCriteria = <T>(rawFilters: Record<string, any>): Criteria<T> =
   const initialCriteria: Criteria<T> = { filters: {}, sort: {} };
 
   return Object.entries(rawFilters).reduce((acc, [key, value]) => {
-    // Handle sort criteria
-    if (key.startsWith('sort.')) {
-      const sortKey = key.split('.')[1];
-      if (typeof sortKey === 'undefined') {
-        console.warn(`Invalid sort key: ${key}`);
-        return acc;
-      }
-      acc.sort[sortKey] = value;
-      return acc;
-    }
+    const [field, operator] = key.split('.') as [keyof T, string];
 
-    // Handle filter criteria
-    const [field, operator] = key.split('.');
-    if (typeof field === 'undefined' || typeof operator === 'undefined') {
+    if (!field) {
       console.warn(`Invalid filter key: ${key}`);
       return acc;
     }
 
-    if (!acc.filters[field]) {
-      acc.filters[field] = {};
+    if (operator === 'sort') {
+      // Handle sort criteria
+      return { ...acc, sort: { ...acc.sort, [field]: value } };
     }
 
-    acc.filters[field][`${operator}`] = value;
-    return acc;
+    // Handle filter criteria
+    const existingFilter = (acc.filters[field] as Record<string, any>) || {};
+    const filterOperator = operator ? `$${operator}` : undefined;
+    const updatedFilter = filterOperator ? { ...existingFilter, [filterOperator]: value } : value;
+
+    return {
+      ...acc,
+      filters: {
+        ...acc.filters,
+        [field]: updatedFilter,
+      },
+    };
   }, initialCriteria);
 };

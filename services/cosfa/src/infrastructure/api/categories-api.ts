@@ -44,9 +44,7 @@ categoriesApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-      void request;
-      console.log(request.queryStringParameters);
-      return repository.get({});
+      return repository.get(request.queryStringParameters || {});
     } catch (error) {
       throw error;
     }

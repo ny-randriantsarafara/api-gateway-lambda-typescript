@@ -1,4 +1,4 @@
-import { MongoDBClient } from '@packages/mongodb';
+import { Criteria, MongoDBClient } from '@packages/mongodb';
 import { mapDBModel } from './utils';
 
 export const repositoryBuilder = <T>(client: MongoDBClient) => ({
@@ -6,8 +6,8 @@ export const repositoryBuilder = <T>(client: MongoDBClient) => ({
     const created = await client.create(entity);
     return mapDBModel(created);
   },
-  get: async (filters: Record<string, any>) => {
-    const entities = await client.getAll(filters);
+  get: async (filters: Criteria<T>) => {
+    const entities = await client.getAll<T>(filters);
     return entities.map((item: T & { _id: string }) => mapDBModel(item));
   },
   getById: async (id: string) => {

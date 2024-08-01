@@ -34,7 +34,7 @@ playersApi.register(
   'GET',
   '/players',
   withDatabaseConnection(client.connect, databaseUri),
-  async (request: HttpRequest) => getPlayersUseCase(repository.get)({})
+  async (request: HttpRequest) => getPlayersUseCase(repository.get)(request.queryStringParameters || {})
 );
 
 playersApi.register(

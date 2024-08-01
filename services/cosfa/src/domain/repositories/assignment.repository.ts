@@ -1,6 +1,7 @@
 import { Assignment } from '../entities/assignment.entity';
+import { Criteria } from '@packages/mongodb';
 
-export type AssignmentFilters = { category?: string; player?: string };
+export type AssignmentFilters = Criteria<Assignment>;
 export type GetAssignments = (filters: AssignmentFilters) => Promise<Assignment[]>;
 export type GetAssignmentById = (id: string) => Promise<Assignment | undefined>;
 export type CreateAssignment = (data: Assignment) => Promise<Assignment>;
