@@ -1,0 +1,40 @@
+assignments-api:
+  handler: src/infrastructure/api/assignments-api.handler
+  events:
+    - http:
+        path: /assignments
+        method: get
+        cors: true
+    - http:
+        path: /assignments/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
+    - http:
+        path: /assignments
+        method: post
+        request:
+          schemas:
+            application/json: ${file(serverless/api/schemas/create-assignment.json)}
+        cors: true
+    - http:
+        path: /assignments/{id}
+        method: put
+        request:
+          parameters:
+            paths:
+              id: true
+          schemas:
+            application/json: ${file(serverless/api/schemas/create-assignment.json)}
+        cors: true
+    - http:
+        path: /assignments/{id}
+        method: delete
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true

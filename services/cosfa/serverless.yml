@@ -18,3 +18,4 @@ provider:
 functions:
   - ${file(serverless/api/players.yml)}
   - ${file(serverless/api/categories.yml)}
+  - ${file(serverless/api/assignments.yml)}
