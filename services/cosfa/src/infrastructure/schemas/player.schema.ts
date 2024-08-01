@@ -2,7 +2,6 @@ import { model, Schema } from 'mongoose';
 import { Player } from '../../domain/entities/player.entity';
 
 const PlayerSchema = new Schema({
-  id: { type: String, required: true },
   firstName: { type: String },
   lastName: { type: String },
 });

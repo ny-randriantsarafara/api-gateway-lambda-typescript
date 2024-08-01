@@ -49,7 +49,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     );
     return { data: json };
   },
-  deleteMany<RecordType extends RaRecord<Identifier>>(
+  async deleteMany<RecordType extends RaRecord<Identifier>>(
     resource: string,
     params: DeleteManyParams<RecordType>
   ): Promise<DeleteManyResult<RecordType>> {
@@ -64,7 +64,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     const { headers, json } = await httpClient(url);
     return {
       data: json,
-      total: json.length
+      total: json.length,
     };
   },
   async getMany<RecordType extends RaRecord<Identifier>>(
@@ -78,11 +78,18 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
       data: json,
     };
   },
-  getManyReference<RecordType extends RaRecord<Identifier>>(
+  async getManyReference<RecordType extends RaRecord<Identifier>>(
     resource: string,
     params: GetManyReferenceParams & QueryFunctionContext
   ): Promise<GetManyReferenceResult<RecordType>> {
-    throw new Error(`GET many reference on ${resource} not implemented`);
+    const { target, id } = params;
+
+    const url = new URL(`${baseApiUrl}/${resource}`);
+    url.searchParams.append(target, id.toString());
+
+    const { headers, json } = await httpClient(url);
+
+    return { data: json, total: json.length };
   },
   async getOne<RecordType extends RaRecord<Identifier>>(
     resource: string,
@@ -106,7 +113,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     );
     return { data: json };
   },
-  updateMany<RecordType extends RaRecord<Identifier>>(
+  async updateMany<RecordType extends RaRecord<Identifier>>(
     resource: string,
     params: UpdateManyParams
   ): Promise<UpdateManyResult<RecordType>> {

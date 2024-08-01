@@ -49,8 +49,7 @@ assignmentsApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-      void request;
-      return repository.get({});
+      return repository.get({ category: request.queryStringParameters?.category });
     } catch (error) {
       throw error;
     }

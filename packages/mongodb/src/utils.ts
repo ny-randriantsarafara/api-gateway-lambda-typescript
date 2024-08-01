@@ -21,3 +21,7 @@ export const executeQuery = async <T>(query: any, errorMessage: string) => {
     throw error;
   }
 };
+export const mapDBModel = <T extends { _id: string }>(entity: T) => ({
+  ...entity,
+  id: entity._id,
+});

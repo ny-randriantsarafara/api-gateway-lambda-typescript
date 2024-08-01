@@ -1,26 +1,22 @@
 import { MongoDBClient } from '@packages/mongodb';
-
-const map = <T extends { _id: string }>(entity: T) => ({
-  ...entity,
-  id: entity._id,
-});
+import { mapDBModel } from './utils';
 
 export const repositoryBuilder = <T>(client: MongoDBClient) => ({
   create: async (entity: Partial<T>) => {
     const created = await client.create(entity);
-    return map(created);
+    return mapDBModel(created);
   },
-  get: async () => {
-    const entities = await client.getAll({});
-    return entities.map((item: T & { _id: string }) => map(item));
+  get: async (filters: Record<string, any>) => {
+    const entities = await client.getAll(filters);
+    return entities.map((item: T & { _id: string }) => mapDBModel(item));
   },
   getById: async (id: string) => {
     const entity = await client.getById(id);
-    return map(entity);
+    return mapDBModel(entity);
   },
   update: async (id: string, entity: any) => {
     const updated = await client.update(id, entity);
-    return map(updated);
+    return mapDBModel(updated);
   },
   delete: async (id: string) => {
     const entity = await client.getById(id);
