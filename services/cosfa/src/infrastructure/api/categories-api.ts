@@ -45,6 +45,7 @@ categoriesApi.register(
   async (request: HttpRequest) => {
     try {
       void request;
+      console.log(request.queryStringParameters);
       return repository.get({});
     } catch (error) {
       throw error;

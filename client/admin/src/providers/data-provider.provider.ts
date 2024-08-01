@@ -56,8 +56,15 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     resource: string,
     params: GetListParams & QueryFunctionContext
   ): Promise<GetListResult<RecordType>> {
-    const url = `${baseApiUrl}/${resource}`;
-
+    const url = new URL(`${baseApiUrl}/${resource}`);
+    if (
+      typeof params.sort !== 'undefined' &&
+      typeof params.sort.field !== 'undefined' &&
+      typeof params.sort.order !== 'undefined'
+    ) {
+      url.searchParams.append('sort.field', params.sort.field);
+      url.searchParams.append('sort.order', params.sort.order.toLowerCase());
+    }
     const { headers, json } = await httpClient(url);
     return {
       data: json,
