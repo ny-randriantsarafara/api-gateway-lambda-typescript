@@ -1,21 +1,6 @@
 import { Model as MongooseModel } from 'mongoose';
 import { buildCriteria, executeQuery } from './utils';
-
-export type QueryOptions = {
-  hydrates?: string[];
-};
-
-export type Operator = 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'exists';
-
-export type FilterCriteria<T> = {
-  [K in keyof T]?: string | number | boolean | Array<any> | Record<Operator, string | number | boolean | Array<any>>;
-};
-
-export type SortCriteria<T> = {
-  [key in keyof T]?: any;
-};
-
-export type Criteria<T> = { filters: FilterCriteria<T> } & { sort: SortCriteria<T> };
+import { Criteria, QueryOptions } from './types';
 
 export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
   getById: async (id: string, options?: QueryOptions) => {
