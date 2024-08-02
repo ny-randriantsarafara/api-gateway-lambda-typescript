@@ -65,6 +65,11 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     ) {
       url.searchParams.append(`${params.sort.field}.sort`, params.sort.order.toLowerCase());
     }
+    if (Object.keys(params.filter).length > 0) {
+      Object.entries(params.filter).forEach(([key, value]: [string, any]) => {
+        url.searchParams.append(key, value);
+      });
+    }
     const { headers, json } = await httpClient(url);
     return {
       data: json,
