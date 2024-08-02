@@ -10,7 +10,7 @@ export const PostFilterSidebar = () => {
     return (
       <Card sx={{ order: -1, mr: 2, mt: 6, width: 250 }}>
         <CardContent>
-          <FilterLiveSearch source="name.search" />
+          <FilterLiveSearch name="name.search" source="name.search" />
           {generateFilterLists(getFieldValues(data), ['ageGroup', 'gender'])}
         </CardContent>
       </Card>
