@@ -1,5 +1,5 @@
 import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
-import { Datagrid, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
+import { Datagrid, DateField, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
 import { generateFilterLists, getFieldValues } from '../../common/utils/filters';
 import React from 'react';
 
@@ -21,7 +21,7 @@ export const UserFilterSidebar = () => {
   return null;
 };
 
-export const UserList = () => {
+export const PlayerList = () => {
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   return (
     <List aside={<UserFilterSidebar />}>
@@ -31,6 +31,7 @@ export const UserList = () => {
         <Datagrid>
           <TextField source="firstName" />
           <TextField source="lastName" />
+          <DateField source="birthDate" />
         </Datagrid>
       )}
     </List>

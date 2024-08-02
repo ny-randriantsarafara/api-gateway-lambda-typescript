@@ -4,16 +4,20 @@ export type CreatePlayerDTO = Partial<Player>;
 
 export type Address = {
   streetNumber?: string;
-  neighborHood?: string;
+  neighborhood?: string;
   district?: string;
   postalCode?: string;
   region?: string;
   country?: string;
 };
 
+export type Phone = { phoneNumber: string; label?: string };
+
+export type Email = { emailAddress: string; label?: string };
+
 export type Contact = {
-  phoneNumbers?: string[];
-  emails?: string[];
+  phones?: Phone[];
+  emails?: Email[];
 };
 
 export class Player extends BaseEntity<CreatePlayerDTO> {
