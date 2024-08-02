@@ -1,6 +1,7 @@
 import { Model as MongooseModel, UpdateQuery } from 'mongoose';
 import { executeQuery, fetchAndThrowIfNotFound } from './utils';
-import { QueryOptions } from './reader';
+
+import {QueryOptions} from "./types";
 
 export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
   create: async (data: any, options?: QueryOptions) => {

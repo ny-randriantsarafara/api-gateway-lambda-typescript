@@ -1,0 +1,40 @@
+categories-api:
+  handler: src/infrastructure/api/categories-api.handler
+  events:
+    - http:
+        path: /categories
+        method: get
+        cors: true
+    - http:
+        path: /categories/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
+    - http:
+        path: /categories
+        method: post
+        request:
+          schemas:
+            application/json: ${file(serverless/api/schemas/create-player.json)}
+        cors: true
+    - http:
+        path: /categories/{id}
+        method: put
+        request:
+          parameters:
+            paths:
+              id: true
+          schemas:
+            application/json: ${file(serverless/api/schemas/update-player.json)}
+        cors: true
+    - http:
+        path: /categories/{id}
+        method: delete
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true

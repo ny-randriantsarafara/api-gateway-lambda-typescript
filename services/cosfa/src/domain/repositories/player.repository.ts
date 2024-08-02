@@ -1,16 +1,17 @@
-import { Player } from '../entities/player.entity';
+import { CreatePlayerDTO, Player } from '../entities/player.entity';
+import {Criteria} from "@packages/mongodb";
 
-export type Filters = Record<string, any>;
-export type GetPlayers = (filters?: Filters) => Promise<Player[]>;
-export type GetPlayerById = (id: string) => Promise<Player | undefined>;
-export type CreatePlayer = (data: Player) => Promise<Player>;
-export type UpdatePlayer = (id: string, data: Player) => Promise<Player | undefined>;
+export type PlayerFilters = Criteria<Player>;
+export type GetPlayers = (filters: PlayerFilters) => Promise<Player[]>;
+export type GetPlayerById = (id: string) => Promise<Player>;
+export type CreatePlayer = (data: CreatePlayerDTO) => Promise<Player>;
+export type UpdatePlayer = (id: string, data: CreatePlayerDTO) => Promise<Player>;
 export type DeletePlayer = (id: string) => Promise<void>;
 
 export type PlayerRepository = {
-  getPlayers: GetPlayers;
-  createPlayer: CreatePlayer;
+  get: GetPlayers;
+  create: CreatePlayer;
   getById: GetPlayerById;
-  updatePlayer: UpdatePlayer;
-  deletePlayer: DeletePlayer;
+  update: UpdatePlayer;
+  delete: DeletePlayer;
 };

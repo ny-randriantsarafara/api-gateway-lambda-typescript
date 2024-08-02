@@ -1,0 +1,29 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CreatePlayerSchema",
+  "required": [
+    "name",
+    "ageGroup",
+    "gender"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "ageGroup": {
+      "type": "number"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "F",
+        "G"
+      ]
+    },
+    "description": {
+      "type": "string"
+    }
+  }
+}
