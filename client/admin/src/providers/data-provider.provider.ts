@@ -57,6 +57,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     params: GetListParams & QueryFunctionContext
   ): Promise<GetListResult<RecordType>> {
     const url = new URL(`${baseApiUrl}/${resource}`);
+    console.log({ params });
     if (
       typeof params.sort !== 'undefined' &&
       typeof params.sort.field !== 'undefined' &&
