@@ -1,4 +1,4 @@
-import { Query } from 'mongoose';
+import {PipelineStage, Query} from 'mongoose';
 
 import { Criteria, Operator, OperatorHandler } from './types';
 
@@ -72,4 +72,65 @@ export const buildCriteria = <T>(rawFilters: Record<string, any>): Criteria<T> =
 
     return { ...acc, filters: { ...acc.filters, ...updatedFilter } };
   }, initialCriteria);
+};
+
+export const generatePipeline = (fields: string[]): PipelineStage[] => {
+  const groupStage: Record<string, any> = { _id: null };
+  const projectStage: Record<string, any> = { _id: 0 };
+
+  fields.forEach(field => {
+    const fieldParts = field.split('.');
+    let currentGroup: Record<string, any> = groupStage;
+    let currentProject: Record<string, any> = projectStage;
+
+    fieldParts.forEach((part, index) => {
+      if (index === fieldParts.length - 1) {
+        if (fieldParts.length > 1) {
+          currentGroup.$addToSet = currentGroup.$addToSet || {};
+          currentGroup.$addToSet[part] = `$${field}`;
+        } else {
+          currentGroup[part] = { $addToSet: `$${field}` };
+        }
+        currentProject[part] = 1;
+      } else {
+        currentGroup[part] = currentGroup[part] || {};
+        currentProject[part] = currentProject[part] || {};
+        currentGroup = currentGroup[part];
+        currentProject = currentProject[part];
+      }
+    });
+  });
+
+  return [{ $group: groupStage }, { $project: projectStage }];
+};
+
+export const parseNestedFields = (data: Record<string, any>) => {
+  const parsedData: Record<string, any> = {};
+
+  Object.keys(data).forEach(key => {
+    if (Array.isArray(data[key]) && data[key].length > 0 && typeof data[key][0] === 'object') {
+      const nestedFields: Record<string, Set<string>> = {};
+
+      data[key].forEach(item => {
+        Object.keys(item).forEach((nestedKey: string) => {
+          if (!nestedFields[nestedKey]) {
+            nestedFields[nestedKey] = new Set();
+          }
+          if (item[nestedKey]) {
+            nestedFields[nestedKey].add(item[nestedKey]);
+          }
+        });
+      });
+
+      // Convert sets to arrays and assign to parsedData
+      parsedData[key] = {};
+      Object.keys(nestedFields).forEach(nestedKey => {
+        parsedData[key][nestedKey] = Array.from(nestedFields[nestedKey]);
+      });
+    } else {
+      parsedData[key] = data[key];
+    }
+  });
+
+  return parsedData;
 };

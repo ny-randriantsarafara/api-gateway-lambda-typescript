@@ -7,3 +7,8 @@ export type Middleware = (input: HttpRequest) => Promise<any>;
 
 // Database connection related types
 export type Connect<ConnectionResponse> = (databaseUri: string) => Promise<ConnectionResponse>;
+
+export type ListResponse<T> = {
+  data: T[];
+  filtersValues: Record<string, any>;
+};

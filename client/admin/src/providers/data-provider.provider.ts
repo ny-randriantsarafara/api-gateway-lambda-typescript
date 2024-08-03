@@ -26,7 +26,15 @@ import {
 
 const httpClient = fetchUtils.fetchJson;
 
+let filtersValues: any = {};
+
 export const dataProvider = (baseApiUrl: string): DataProvider => ({
+  setFiltersValues: (resource: string, values: any) => {
+    filtersValues[resource] = values;
+  },
+  getFiltersValues: (resource: string) => {
+    return filtersValues[resource];
+  },
   async create<RecordType, ResultRecordType extends RaRecord<Identifier>>(
     resource: string,
     params: CreateParams
@@ -57,7 +65,6 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     params: GetListParams & QueryFunctionContext
   ): Promise<GetListResult<RecordType>> {
     const url = new URL(`${baseApiUrl}/${resource}`);
-    console.log({ params });
     if (
       typeof params.sort !== 'undefined' &&
       typeof params.sort.field !== 'undefined' &&
@@ -71,9 +78,10 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
       });
     }
     const { headers, json } = await httpClient(url);
+    // TODO: ugly hack to store filters values in localStorage
     return {
-      data: json,
-      total: json.length,
+      ...json,
+      total: json.count,
     };
   },
   async getMany<RecordType extends RaRecord<Identifier>>(
@@ -84,7 +92,8 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
     const { headers, json } = await httpClient(url);
     return {
-      data: json,
+      ...json,
+      total: json.count,
     };
   },
   async getManyReference<RecordType extends RaRecord<Identifier>>(
@@ -94,11 +103,14 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
     const { target, id } = params;
 
     const url = new URL(`${baseApiUrl}/${resource}`);
-    url.searchParams.append(target, id.toString());
+    url.searchParams.append(`${target}.eq`, id.toString());
 
     const { headers, json } = await httpClient(url);
 
-    return { data: json, total: json.length };
+    return {
+      ...json,
+      total: json.count,
+    };
   },
   async getOne<RecordType extends RaRecord<Identifier>>(
     resource: string,

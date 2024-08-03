@@ -1,17 +1,19 @@
 import React from 'react';
 import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
-import {Datagrid, FilterLiveSearch, List, SimpleList, TextField, useListContext} from 'react-admin';
-import { generateFilterLists, getFieldValues } from '../../common/utils/filters';
+import { Datagrid, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
+import { generateFilterLists } from '../../common/utils/filters';
 
 export const PostFilterSidebar = () => {
-  const { data } = useListContext();
+  const listContext = useListContext();
+  const { resource } = listContext;
+  const filtersValues = localStorage.getItem(`${resource}-filtersValues`);
 
-  if (typeof data !== 'undefined') {
+  if (filtersValues && typeof filtersValues !== 'undefined') {
     return (
       <Card sx={{ order: -1, mr: 2, mt: 6, width: 250 }}>
         <CardContent>
           <FilterLiveSearch name="name.search" source="name.search" />
-          {generateFilterLists(getFieldValues(data), ['ageGroup', 'gender'])}
+          {generateFilterLists(JSON.parse(filtersValues), ['ageGroup', 'gender'])}
         </CardContent>
       </Card>
     );

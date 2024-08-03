@@ -1,10 +1,10 @@
 import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
 import { Datagrid, DateField, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
-import { generateFilterLists, getFieldValues } from '../../common/utils/filters';
+import { generateFilterLists } from '../../common/utils/filters';
 import React from 'react';
 
 export const UserFilterSidebar = () => {
-  const { data } = useListContext();
+  const { data, filterValues } = useListContext();
 
   if (typeof data !== 'undefined') {
     return (
@@ -12,7 +12,7 @@ export const UserFilterSidebar = () => {
         <CardContent>
           <FilterLiveSearch name="firstName.search" source="firstName.search" label="First name" />
           <FilterLiveSearch name="lastName.search" source="lastName.search" label="Last name" />
-          {generateFilterLists(getFieldValues(data), [])}
+          {generateFilterLists(filterValues, [])}
         </CardContent>
       </Card>
     );

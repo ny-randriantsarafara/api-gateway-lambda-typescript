@@ -1,12 +1,18 @@
-import { CreatePlayerDTO, Player } from '../../domain/entities/player.entity';
+import { Player } from '../../domain/entities/player.entity';
 import { GetPlayers } from '../../domain/repositories/player.repository';
+import { ListResponse } from '@packages/api';
 
 export const getPlayersUseCase =
   (getPlayers: GetPlayers) =>
-  async (input: any): Promise<Player[]> => {
+  async (input: any): Promise<ListResponse<Player>> => {
     try {
-      const playersDbModel = await getPlayers(input);
-      return playersDbModel.map(player => Player.create<Player, CreatePlayerDTO>(player));
+      const result = await getPlayers(input, [
+        'address.neighborhood',
+        'address.district',
+        'address.region',
+        'address.country',
+      ]);
+      return { ...result, data: result.data.map(player => Player.create(player)) };
     } catch (error) {
       // TODO: Handle error correctly
       throw error;
