@@ -45,33 +45,31 @@ const OPERATOR_MAP: Record<Operator, OperatorHandler> = {
 export const buildCriteria = <T>(rawFilters: Record<string, any>): Criteria<T> => {
   const initialCriteria: Criteria<T> = { filters: {}, sort: {} };
 
-  return Object.entries(rawFilters).reduce((acc, [key, value]) => {
-    const [field, operator] = key.split('.') as [keyof T, Operator];
+  const setNestedValue = (obj: any, key: string, value: any) => {
+    obj[key] = value;
+  };
 
-    if (typeof field === 'undefined') {
+  return Object.entries(rawFilters).reduce((acc, [key, value]) => {
+    const keys = key.split('.');
+    const operator = keys.pop() as Operator;
+    const fieldPath = keys.join('.');
+
+    if (fieldPath.length === 0) {
       console.warn(`Invalid filter key: ${key}`);
       return acc;
     }
 
     if (operator === 'sort') {
-      // Handle sort criteria
-      return { ...acc, sort: { ...acc.sort, [field]: value } };
+      setNestedValue(acc.sort, fieldPath, value);
+      return { ...acc, sort: { ...acc.sort, [fieldPath]: value } };
     }
 
-    // Handle filter criteria
-    const existingFilter = (acc.filters[field] as Record<string, any>) || {};
     const filterOperator = typeof operator !== 'undefined' ? OPERATOR_MAP[operator] : undefined;
     const updatedFilter =
       typeof filterOperator !== 'undefined'
-        ? { ...existingFilter, ...(filterOperator as OperatorHandler)(field.toString(), value) }
+        ? { [fieldPath]: { ...(filterOperator as OperatorHandler)(fieldPath, value) } }
         : value;
 
-    return {
-      ...acc,
-      filters: {
-        ...acc.filters,
-        [field]: updatedFilter,
-      },
-    };
+    return { ...acc, filters: { ...acc.filters, ...updatedFilter } };
   }, initialCriteria);
 };

@@ -19,7 +19,7 @@ export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
   },
   getAll: async <T>(criteria: Criteria<T>, options?: QueryOptions) => {
     const { filters, sort } = buildCriteria(criteria);
-    console.log({ filters, sort });
+    console.log({ filters: JSON.stringify(filters), sort: JSON.stringify(sort) });
     let query = Model.find({});
     if (typeof filters !== 'undefined' && Object.keys(filters).length > 0) {
       query = Model.find(filters);
