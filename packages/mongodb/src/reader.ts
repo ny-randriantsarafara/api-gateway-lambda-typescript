@@ -18,18 +18,24 @@ export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
     return executeQuery(query, `No document satisfies the query ${JSON.stringify(filters)}`);
   },
   getAll: (criteria: Record<string, any>, options?: QueryOptions) => {
-    const { filters, sort } = buildCriteria(criteria);
-    console.log({ filters: JSON.stringify(filters), sort: JSON.stringify(sort) });
-    let query = Model.find({});
-    if (typeof filters !== 'undefined' && Object.keys(filters).length > 0) {
-      query = Model.find(filters);
+    const parsedCriteria = buildCriteria(criteria);
+    console.log({ criteria: JSON.stringify(parsedCriteria) });
+
+    const { filters, sort, pagination } = parsedCriteria;
+    let query = Model.find(filters || {});
+
+    if (pagination && typeof pagination.page !== 'undefined' && typeof pagination.limit !== 'undefined') {
+      query = query.limit(pagination.limit).skip((pagination.page - 1) * pagination.limit);
     }
-    if (typeof sort !== 'undefined' && Object.keys(sort).length > 0) {
+
+    if (sort && Object.keys(sort).length > 0) {
       query = query.sort(sort);
     }
+
     if (options?.hydrates) {
       query = query.populate(options.hydrates);
     }
+
     return executeQuery(query, 'An error occurred while fetching documents');
   },
   getFiltersValues: async (fields: string[]): Promise<Record<string, any>> => {

@@ -10,5 +10,5 @@ export type Connect<ConnectionResponse> = (databaseUri: string) => Promise<Conne
 
 export type ListResponse<T> = {
   data: T[];
-  filtersValues: Record<string, any>;
+  count: number;
 };

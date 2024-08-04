@@ -6,17 +6,15 @@ export const repositoryBuilder = <T>(client: MongoDBClient) => ({
     const created = await client.create(entity);
     return mapDBModel(created);
   },
-  get: async (criteria: Record<string, any>, filterFields: string[] = []) => {
-    console.log({ criteria, filterFields });
+  get: async (criteria: Record<string, any>) => {
+    console.log({ criteria, });
     const entities = await client.getAll<T>(criteria);
     const count = await client.getCount(criteria);
     const mappedEntities = entities.map((item: T & { _id: string }) => mapDBModel(item));
-    const filtersValues = await client.getFiltersValues(filterFields);
-    return { data: mappedEntities, count, filtersValues };
+    return { data: mappedEntities, count };
   },
   getFiltersValues: async (filterFields: string[]) => {
-    const filtersValues = await client.getFiltersValues(filterFields);
-    return filtersValues;
+    return await client.getFiltersValues(filterFields);
   },
   getById: async (id: string) => {
     const entity = await client.getById(id);

@@ -30,20 +30,20 @@ export const mapDBModel = <T extends { _id: string }>(entity: T) => ({
 });
 
 const OPERATOR_MAP: Record<Operator, OperatorHandler> = {
-  eq: (field: string, value: any) => ({ [`$eq`]: value }),
-  ne: (field: string, value: any) => ({ [`$ne`]: value }),
-  gt: (field: string, value: any) => ({ [`$gt`]: value }),
-  gte: (field: string, value: any) => ({ [`$gte`]: value }),
-  lt: (field: string, value: any) => ({ [`$lt`]: value }),
-  lte: (field: string, value: any) => ({ [`$lte`]: value }),
-  exists: (field: string, value: any) => ({ [`$exists`]: value }),
-  search: (field: string, value: any) => ({
+  eq: (value: any) => ({ [`$eq`]: value }),
+  ne: (value: any) => ({ [`$ne`]: value }),
+  gt: (value: any) => ({ [`$gt`]: value }),
+  gte: (value: any) => ({ [`$gte`]: value }),
+  lt: (value: any) => ({ [`$lt`]: value }),
+  lte: (value: any) => ({ [`$lte`]: value }),
+  exists: (value: any) => ({ [`$exists`]: value }),
+  search: (value: any) => ({
     $regex: new RegExp(value, 'i'),
   }),
 };
 
 export const buildCriteria = <T>(rawFilters: Record<string, any>): Criteria<T> => {
-  const initialCriteria: Criteria<T> = { filters: {}, sort: {} };
+  const initialCriteria: Criteria<T> = { filters: {}, sort: {}, pagination: {} };
 
   const setNestedValue = (obj: any, key: string, value: any) => {
     obj[key] = value;
@@ -51,6 +51,16 @@ export const buildCriteria = <T>(rawFilters: Record<string, any>): Criteria<T> =
 
   return Object.entries(rawFilters).reduce((acc, [key, value]) => {
     const keys = key.split('.');
+    if (keys.length === 1 && keys[0] === 'page') {
+      return { ...acc, pagination: { ...acc.pagination, page: value } };
+    }
+    if (keys.length === 1 && keys[0] === 'limit') {
+      return { ...acc, pagination: { ...acc.pagination, limit: value } };
+    }
+    if (keys.length === 1 && keys[0] !== 'page' && keys[0] !== 'limit') {
+      return { ...acc, filters: { ...acc.filters, [keys[0]]: value } };
+    }
+
     const operator = keys.pop() as Operator;
     const fieldPath = keys.join('.');
 
@@ -67,7 +77,7 @@ export const buildCriteria = <T>(rawFilters: Record<string, any>): Criteria<T> =
     const filterOperator = typeof operator !== 'undefined' ? OPERATOR_MAP[operator] : undefined;
     const updatedFilter =
       typeof filterOperator !== 'undefined'
-        ? { [fieldPath]: { ...(filterOperator as OperatorHandler)(fieldPath, value) } }
+        ? { [fieldPath]: { ...(filterOperator as OperatorHandler)(value) } }
         : value;
 
     return { ...acc, filters: { ...acc.filters, ...updatedFilter } };

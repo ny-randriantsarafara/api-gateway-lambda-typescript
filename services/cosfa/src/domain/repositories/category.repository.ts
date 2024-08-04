@@ -2,7 +2,7 @@ import { ListResponse } from '@packages/api';
 import { Category } from '../entities/category.entity';
 
 export type CategoryCriteria = Record<string, any>;
-export type GetCategories = (criteria: CategoryCriteria, fieldFilters: string[]) => Promise<ListResponse<Category>>;
+export type GetCategories = (criteria: CategoryCriteria) => Promise<ListResponse<Category>>;
 export type GetFiltersValues = (fieldFilters: string[]) => Promise<Record<string, any>>;
 export type GetCategoryById = (id: string) => Promise<Category | undefined>;
 export type CreateCategory = (data: Category) => Promise<Category>;

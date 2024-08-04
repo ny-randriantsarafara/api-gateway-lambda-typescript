@@ -3,8 +3,8 @@ import { MongoDBReader } from './reader';
 
 export type MongoDBClient = MongoDBReader &
   MongoDBWriter & {
-  connect: (databaseUri: string) => any;
-};
+    connect: (databaseUri: string) => any;
+  };
 
 export type QueryOptions = {
   hydrates?: string[];
@@ -24,5 +24,12 @@ export type SortCriteria<T> = {
   [key in keyof T]?: any;
 };
 
-export type Criteria<T> = { filters: FilterCriteria<T> } & { sort: SortCriteria<T> };
-export type OperatorHandler = (field: string, value: any) => any;
+export type PaginationCriteria = {
+  limit?: number;
+  page?: number;
+};
+
+export type Criteria<T> = { filters: FilterCriteria<T> } & { sort: SortCriteria<T> } & {
+  pagination: PaginationCriteria;
+};
+export type OperatorHandler = (value: any) => any;

@@ -44,7 +44,7 @@ categoriesApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-      return repository.get(request.queryStringParameters || {}, ['gender', 'ageGroup']);
+      return repository.get(request.queryStringParameters || {});
     } catch (error) {
       throw error;
     }

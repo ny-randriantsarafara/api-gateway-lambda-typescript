@@ -4,7 +4,6 @@ import { ListResponse } from '@packages/api';
 export type AssignmentCriteria = Record<string, any>;
 export type GetAssignments = (
   criteria: AssignmentCriteria,
-  filterFields: string[],
 ) => Promise<ListResponse<Assignment>>;
 export type GetAssignmentById = (id: string) => Promise<Assignment | undefined>;
 export type CreateAssignment = (data: Assignment) => Promise<Assignment>;
