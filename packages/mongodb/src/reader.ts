@@ -1,5 +1,5 @@
 import { Model as MongooseModel } from 'mongoose';
-import {buildCriteria, executeQuery, generatePipeline, parseNestedFields} from './utils';
+import { buildCriteria, executeQuery, generatePipeline, parseNestedFields } from './utils';
 import { Criteria, QueryOptions } from './types';
 
 export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
@@ -17,7 +17,7 @@ export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
     }
     return executeQuery(query, `No document satisfies the query ${JSON.stringify(filters)}`);
   },
-  getAll: async <T>(criteria: Criteria<T>, options?: QueryOptions) => {
+  getAll: (criteria: Record<string, any>, options?: QueryOptions) => {
     const { filters, sort } = buildCriteria(criteria);
     console.log({ filters: JSON.stringify(filters), sort: JSON.stringify(sort) });
     let query = Model.find({});
@@ -32,12 +32,12 @@ export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
     }
     return executeQuery(query, 'An error occurred while fetching documents');
   },
-  getFiltersValues: async <T extends any>(fields: string[]): Promise<Record<string, any>> => {
+  getFiltersValues: async (fields: string[]): Promise<Record<string, any>> => {
     const pipeline = generatePipeline(fields);
     const [filterValues] = await Model.aggregate(pipeline).exec();
     return parseNestedFields(filterValues);
   },
-  getCount: async <T>(criteria: Criteria<T>): Promise<number> => {
+  getCount: async <T>(criteria: Record<string, any>): Promise<number> => {
     const { filters } = buildCriteria(criteria);
     return Model.countDocuments(filters).exec();
   },
@@ -46,7 +46,7 @@ export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
 export type MongoDBReader = {
   getById: (id: string, options?: QueryOptions) => Promise<any>;
   getOne: (filters: Record<string, any>, options?: QueryOptions) => Promise<any>;
-  getAll: <T>(criteria: Criteria<T>, options?: QueryOptions) => Promise<any[]>;
+  getAll: <T>(criteria: Record<string, any>, options?: QueryOptions) => Promise<any[]>;
   getFiltersValues: (fields: string[]) => Promise<Record<string, any>>;
-  getCount: <T>(criteria: Criteria<T>) => Promise<number>;
+  getCount: <T>(criteria: Record<string, any>) => Promise<number>;
 };

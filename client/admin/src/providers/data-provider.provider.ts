@@ -134,4 +134,9 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
   ): Promise<UpdateManyResult<RecordType>> {
     throw new Error(`Update many reference on ${resource} not implemented`);
   },
+
+  async getFiltersValues(resource: string, params: { fields: string[] }): Promise<Record<string, any>> {
+    const { json } = await httpClient(`${baseApiUrl}/${resource}/filters-values?fields=${params.fields.join(',')}`);
+    return { data: json };
+  },
 });

@@ -1,19 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
-import { Datagrid, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
+import { Datagrid, FilterLiveSearch, List, SimpleList, TextField, useDataProvider, useListContext } from 'react-admin';
 import { generateFilterLists } from '../../common/utils/filters';
 
 export const PostFilterSidebar = () => {
-  const listContext = useListContext();
-  const { resource } = listContext;
-  const filtersValues = localStorage.getItem(`${resource}-filtersValues`);
+  const { resource } = useListContext();
+  const [filtersValues, setFiltersValues] = useState<Record<string, any> | null>(null);
+  const dataProvider = useDataProvider();
 
-  if (filtersValues && typeof filtersValues !== 'undefined') {
+  useEffect(() => {
+    const fetchFilterValues = async () => {
+      try {
+        const { data } = await dataProvider.getFiltersValues(resource, { fields: ['ageGroup', 'gender'] });
+        setFiltersValues(data);
+      } catch (error) {
+        console.error('Error fetching filter values:', error);
+      }
+    };
+
+    fetchFilterValues();
+  }, [resource]);
+
+  if (filtersValues) {
     return (
       <Card sx={{ order: -1, mr: 2, mt: 6, width: 250 }}>
         <CardContent>
           <FilterLiveSearch name="name.search" source="name.search" />
-          {generateFilterLists(JSON.parse(filtersValues), ['ageGroup', 'gender'])}
+          {generateFilterLists(filtersValues, ['ageGroup', 'gender'])}
         </CardContent>
       </Card>
     );

@@ -6,7 +6,7 @@ export const repositoryBuilder = <T>(client: MongoDBClient) => ({
     const created = await client.create(entity);
     return mapDBModel(created);
   },
-  get: async (criteria: Criteria<T>, filterFields: string[] = []) => {
+  get: async (criteria: Record<string, any>, filterFields: string[] = []) => {
     console.log({ criteria, filterFields });
     const entities = await client.getAll<T>(criteria);
     const count = await client.getCount(criteria);

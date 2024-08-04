@@ -6,6 +6,10 @@ categories-api:
         method: get
         cors: true
     - http:
+        path: /categories/filters-values
+        method: get
+        cors: true
+    - http:
         path: /categories/{id}
         method: get
         request:

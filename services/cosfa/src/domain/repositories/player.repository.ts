@@ -2,7 +2,7 @@ import { Criteria } from '@packages/mongodb';
 import { CreatePlayerDTO, Player } from '../entities/player.entity';
 import { ListResponse } from '@packages/api';
 
-export type PlayerCriteria = Criteria<Player>;
+export type PlayerCriteria = Record<string, any>;
 export type GetPlayers = (criteria: PlayerCriteria, fieldFilters: string[]) => Promise<ListResponse<Player>>;
 export type GetFiltersValues = (fieldFilters: string[]) => Promise<Record<string, any>>;
 export type GetPlayerById = (id: string) => Promise<Player>;

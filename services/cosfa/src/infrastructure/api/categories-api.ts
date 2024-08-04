@@ -52,6 +52,14 @@ categoriesApi.register(
 );
 
 categoriesApi.register(
+  'GET',
+  '/categories/filters-values',
+  withDatabaseConnection(client.connect, databaseUri),
+  async (request: HttpRequest) =>
+    repository.getFiltersValues((request.queryStringParameters?.fields?.split(',') || []) as string[])
+);
+
+categoriesApi.register(
   'PUT',
   '/categories/{id}',
   withDatabaseConnection(client.connect, databaseUri),
