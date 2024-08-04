@@ -1,30 +1,19 @@
+import React from 'react';
 import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
 import { Datagrid, DateField, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
-import { generateFilterLists } from '../../common/utils/filters';
-import React from 'react';
-
-export const UserFilterSidebar = () => {
-  const { data, filterValues } = useListContext();
-
-  if (typeof data !== 'undefined') {
-    return (
-      <Card sx={{ order: -1, mr: 2, mt: 6, width: 250 }}>
-        <CardContent>
-          <FilterLiveSearch name="firstName.search" source="firstName.search" label="First name" />
-          <FilterLiveSearch name="lastName.search" source="lastName.search" label="Last name" />
-          {generateFilterLists(filterValues, [])}
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return null;
-};
+import SidebarFilters, { generateFilterLists } from '../../common/components/SidebarFilter';
 
 export const PlayerList = () => {
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   return (
-    <List aside={<UserFilterSidebar />}>
+    <List
+      aside={
+        <SidebarFilters
+          liveFilterFields={['firstName', 'lastName', 'birhtDate']}
+          valueFilterFields={['address.country', 'address.region', 'address.district', 'address.postalCode']}
+        />
+      }
+    >
       {isSmall ? (
         <SimpleList primaryText={record => record.firstName} secondaryText={record => record.lastName} />
       ) : (
