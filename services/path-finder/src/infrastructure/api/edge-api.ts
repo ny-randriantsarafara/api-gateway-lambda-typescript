@@ -32,7 +32,7 @@ const routeRepository = osrmRepositoryBuilder<RouteResponse>(
     version: 'v1',
     profile: 'driving',
   },
-  { sources: 0, destinations: 1, annotations: 'distance,duration' }
+  { sources: 0, destinations: 1, annotations: 'distance,duration' },
 );
 
 edgeApi.register('POST', '/edges', withDatabaseConnection(dbClient.connect, databaseUri), async request => {
@@ -40,7 +40,7 @@ edgeApi.register('POST', '/edges', withDatabaseConnection(dbClient.connect, data
 
   const cost = await computeCostUseCase(graphNodeRepository.getById, routeRepository.getRoute)(
     request.body.from,
-    request.body.target
+    request.body.target,
   );
 
   return createEdgeUseCase(edgeRepository.createEdge)({ ...request.body, cost });
@@ -51,7 +51,7 @@ edgeApi.register('PUT', '/edges/{id}', withDatabaseConnection(dbClient.connect, 
 
   const cost = await computeCostUseCase(graphNodeRepository.getById, routeRepository.getRoute)(
     request.body.from,
-    request.body.target
+    request.body.target,
   );
 
   return updateEdgeUseCase(edgeRepository.updateEdge)(request.pathParameters?.id as string, { ...request.body, cost });

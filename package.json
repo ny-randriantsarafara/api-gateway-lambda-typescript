@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*",
     "services/*",
-    "client/*" 
+    "client/*"
   ],
   "devDependencies": {
     "@types/node": "^20.14.2",

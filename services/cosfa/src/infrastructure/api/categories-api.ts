@@ -22,7 +22,7 @@ categoriesApi.register(
       console.error(error);
       throw error;
     }
-  }
+  },
 );
 
 categoriesApi.register(
@@ -35,7 +35,7 @@ categoriesApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 categoriesApi.register(
@@ -48,7 +48,7 @@ categoriesApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 categoriesApi.register(
@@ -56,7 +56,7 @@ categoriesApi.register(
   '/categories/filters-values',
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) =>
-    repository.getFiltersValues((request.queryStringParameters?.fields?.split(',') || []) as string[])
+    repository.getFiltersValues((request.queryStringParameters?.fields?.split(',') || []) as string[]),
 );
 
 categoriesApi.register(
@@ -71,7 +71,7 @@ categoriesApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 categoriesApi.register(
@@ -84,7 +84,7 @@ categoriesApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 export const handler = async (input: HttpRequest) => categoriesApi.execute(input);

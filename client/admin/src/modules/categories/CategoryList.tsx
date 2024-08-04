@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
-import { Datagrid, FilterLiveSearch, List, SimpleList, TextField, useDataProvider, useListContext } from 'react-admin';
-import SidebarFilters, { generateFilterLists } from '../../common/components/SidebarFilter';
+import React from 'react';
+import { Theme, useMediaQuery } from '@mui/material';
+import { Datagrid, List, SimpleList, TextField } from 'react-admin';
+import SidebarFilters from '../../common/components/SidebarFilter';
 
 export const CategoryList = () => {
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));

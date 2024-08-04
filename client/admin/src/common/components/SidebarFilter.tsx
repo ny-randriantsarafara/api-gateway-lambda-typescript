@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@mui/material';
 import { FilterList, FilterListItem, FilterLiveSearch, useDataProvider, useListContext } from 'react-admin';
+import { getNestedValue } from '../utils/object';
 
 type FilterSidebarProps = {
   liveFilterFields: string[];
@@ -41,14 +42,11 @@ const SidebarFilters: React.FC<FilterSidebarProps> = ({ liveFilterFields, valueF
 
 export default SidebarFilters;
 
+//TODO: implement date range filter
 export const generateLiveSearchFilters = (fields: string[]) => {
   return fields.map(field => (
     <FilterLiveSearch label={field} name={`${field}.search`} source={`${field}.search`} key={`filter-${field}`} />
   ));
-};
-
-const getNestedValue = (obj: Record<string, any>, path: string): any => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
 
 export const generateFilterLists = (filterValues: Record<string, Set<any>>, fields: string[]) => {

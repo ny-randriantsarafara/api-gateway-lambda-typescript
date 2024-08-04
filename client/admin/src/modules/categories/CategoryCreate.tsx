@@ -1,5 +1,5 @@
 import React from 'react';
-import { Create, DateInput, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin';
+import { Create, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin';
 
 export const CategoryCreate = () => (
   <Create>

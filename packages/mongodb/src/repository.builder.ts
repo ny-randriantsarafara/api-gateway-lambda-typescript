@@ -1,4 +1,4 @@
-import { Criteria, MongoDBClient } from '@packages/mongodb';
+import { MongoDBClient } from '@packages/mongodb';
 import { mapDBModel } from './utils';
 
 export const repositoryBuilder = <T>(client: MongoDBClient) => ({

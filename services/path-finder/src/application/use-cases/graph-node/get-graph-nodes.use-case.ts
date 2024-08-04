@@ -10,6 +10,6 @@ export const getGraphNodesUseCase = (getGraphNodes: GetGraphNodes) => async () =
       name: node.name,
       neighbors: node.neighbors,
       coordinates: node.coordinates,
-    })
+    }),
   );
 };

@@ -21,8 +21,8 @@ export const edgeRepositoryBuilder = (client: MongoDBClient): EdgeRepository => 
       (
         item: {
           _id: any;
-        } & Edge
-      ) => mapEdge(item)
+        } & Edge,
+      ) => mapEdge(item),
     );
   },
   getById: async (id: string) => {

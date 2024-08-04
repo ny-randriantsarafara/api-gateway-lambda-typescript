@@ -1,4 +1,4 @@
-import {PipelineStage, Query} from 'mongoose';
+import { PipelineStage, Query } from 'mongoose';
 
 import { Criteria, Operator, OperatorHandler } from './types';
 

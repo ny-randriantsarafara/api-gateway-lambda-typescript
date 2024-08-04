@@ -1,7 +1,7 @@
 import { Model as MongooseModel, UpdateQuery } from 'mongoose';
 import { executeQuery, fetchAndThrowIfNotFound } from './utils';
 
-import {QueryOptions} from "./types";
+import { QueryOptions } from './types';
 
 export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
   create: async (data: any, options?: QueryOptions) => {
@@ -37,7 +37,7 @@ export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
 });
 
 export type MongoDBWriter = {
-    create: (data: any, options?: QueryOptions) => Promise<any>;
-    update: (id: string, data: UpdateQuery<any>, options?: QueryOptions) => Promise<any>;
-    delete: (id: string) => Promise<void>;
+  create: (data: any, options?: QueryOptions) => Promise<any>;
+  update: (id: string, data: UpdateQuery<any>, options?: QueryOptions) => Promise<any>;
+  delete: (id: string) => Promise<void>;
 };

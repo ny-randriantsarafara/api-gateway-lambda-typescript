@@ -27,7 +27,7 @@ assignmentsApi.register(
       console.error(error);
       throw error;
     }
-  }
+  },
 );
 
 assignmentsApi.register(
@@ -40,7 +40,7 @@ assignmentsApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 assignmentsApi.register(
@@ -49,12 +49,12 @@ assignmentsApi.register(
   withDatabaseConnection(client.connect, databaseUri),
   async (request: HttpRequest) => {
     try {
-        console.log(request.queryStringParameters);
+      console.log(request.queryStringParameters);
       return repository.get(request.queryStringParameters || {}, []);
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 assignmentsApi.register(
@@ -71,7 +71,7 @@ assignmentsApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 assignmentsApi.register(
@@ -84,7 +84,7 @@ assignmentsApi.register(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 export const handler = async (input: HttpRequest) => assignmentsApi.execute(input);

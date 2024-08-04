@@ -3,22 +3,22 @@ import { buildQueryString } from './utils';
 
 export const builder = (baseUrl: string): HttpClient => {
   const fetchAndHandleResponse = async ({
-    path,
-    body,
-    queryParams,
-    options,
-  }: RequestParams): Promise<CustomResponse> => {
+                                          path,
+                                          body,
+                                          queryParams,
+                                          options,
+                                        }: RequestParams): Promise<CustomResponse> => {
     try {
       const queryString = buildQueryString(queryParams);
       const url = `${baseUrl}/${path}${queryString ? `?${queryString}` : ''}`;
       console.log('Requesting:', url);
       const fetchOptions = body
         ? {
-            method: options?.method || 'GET',
-            headers: { 'Content-Type': 'application/json', ...options?.headers },
-            body: JSON.stringify(body),
-            ...options,
-          }
+          method: options?.method || 'GET',
+          headers: { 'Content-Type': 'application/json', ...options?.headers },
+          body: JSON.stringify(body),
+          ...options,
+        }
         : options;
 
       const response = await fetch(url, fetchOptions);

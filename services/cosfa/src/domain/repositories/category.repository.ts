@@ -1,4 +1,3 @@
-import { Criteria } from '@packages/mongodb';
 import { ListResponse } from '@packages/api';
 import { Category } from '../entities/category.entity';
 

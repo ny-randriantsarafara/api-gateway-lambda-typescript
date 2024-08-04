@@ -3,8 +3,8 @@ import { MongoDBReader } from './reader';
 
 export type MongoDBClient = MongoDBReader &
   MongoDBWriter & {
-    connect: (databaseUri: string) => any;
-  };
+  connect: (databaseUri: string) => any;
+};
 
 export type QueryOptions = {
   hydrates?: string[];

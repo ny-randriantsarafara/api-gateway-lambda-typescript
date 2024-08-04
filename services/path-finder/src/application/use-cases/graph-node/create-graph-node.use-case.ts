@@ -9,6 +9,6 @@ export const createGraphNodeUseCase = (createGraphNode: CreateGraphNode) => asyn
     id: result.id,
     name: result.name,
     neighbors: result.neighbors,
-    coordinates: result.coordinates
+    coordinates: result.coordinates,
   });
 };

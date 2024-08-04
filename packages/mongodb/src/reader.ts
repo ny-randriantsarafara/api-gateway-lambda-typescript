@@ -1,6 +1,6 @@
 import { Model as MongooseModel } from 'mongoose';
 import { buildCriteria, executeQuery, generatePipeline, parseNestedFields } from './utils';
-import { Criteria, QueryOptions } from './types';
+import { QueryOptions } from './types';
 
 export const reader = (Model: MongooseModel<any>): MongoDBReader => ({
   getById: async (id: string, options?: QueryOptions) => {

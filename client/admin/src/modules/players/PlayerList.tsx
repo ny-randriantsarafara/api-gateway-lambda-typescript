@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, Theme, useMediaQuery } from '@mui/material';
-import { Datagrid, DateField, FilterLiveSearch, List, SimpleList, TextField, useListContext } from 'react-admin';
-import SidebarFilters, { generateFilterLists } from '../../common/components/SidebarFilter';
+import { Theme, useMediaQuery } from '@mui/material';
+import { Datagrid, DateField, List, SimpleList, TextField } from 'react-admin';
+import SidebarFilters from '../../common/components/SidebarFilter';
 
 export const PlayerList = () => {
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
@@ -9,7 +9,7 @@ export const PlayerList = () => {
     <List
       aside={
         <SidebarFilters
-          liveFilterFields={['firstName', 'lastName', 'birhtDate']}
+          liveFilterFields={['firstName', 'lastName']}
           valueFilterFields={['address.country', 'address.region', 'address.district', 'address.postalCode']}
         />
       }

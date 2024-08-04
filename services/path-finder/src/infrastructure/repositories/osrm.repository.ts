@@ -23,7 +23,7 @@ export type OSRMRepository<T extends any> = {
 export const osrmRepositoryBuilder = <T extends any>(
   httpClient: HttpClient,
   generalParameters: GeneralParameters,
-  serviceOptions: Record<string, any>
+  serviceOptions: Record<string, any>,
 ): OSRMRepository<T> => {
   const getRoute = async (coordinates: Coordinates) => {
     const endpoint = `${generalParameters.service}/${generalParameters.version}/${generalParameters.profile}/${coordinates.source[0]},${coordinates.source[1]};${coordinates.destination[0]},${coordinates.destination[1]}`;
