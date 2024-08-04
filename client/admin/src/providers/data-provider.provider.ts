@@ -42,6 +42,28 @@ const appendFilterParams = (url: URL, filter: Record<string, any>): URL => {
   return newUrl;
 };
 
+const appendPaginationParams = (url: URL, pagination: { page?: number; limit?: number }): URL => {
+  const newUrl = new URL(url.toString());
+  const { page, limit } = pagination;
+  if (page && limit) {
+    newUrl.searchParams.append('page', page.toString());
+    newUrl.searchParams.append('limit', limit.toString());
+  }
+  return newUrl;
+};
+
+const appendParams = (
+  url: URL,
+  sort: { field?: string; order?: string },
+  filter: Record<string, any>,
+  pagination: { page?: number; limit?: number }
+): URL => {
+  let newUrl = appendSortParams(url, sort);
+  newUrl = appendFilterParams(newUrl, filter);
+  newUrl = appendPaginationParams(newUrl, pagination);
+  return newUrl;
+};
+
 const handleHttpClientResponse = async (url: string | URL) => {
   const { headers, json } = await httpClient(url);
   return { headers, json };
@@ -50,7 +72,7 @@ const handleHttpClientResponse = async (url: string | URL) => {
 export const dataProvider = (baseApiUrl: string): DataProvider => ({
   async create<RecordType, ResultRecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: CreateParams,
+    params: CreateParams
   ): Promise<CreateResult<ResultRecordType>> {
     const { json } = await httpClient(`${baseApiUrl}/${resource}`, {
       method: 'POST',
@@ -61,7 +83,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
   async delete<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: DeleteParams<RecordType>,
+    params: DeleteParams<RecordType>
   ): Promise<DeleteResult<RecordType>> {
     const { json } = await httpClient(`${baseApiUrl}/${resource}/${params.id}`, {
       method: 'DELETE',
@@ -71,26 +93,37 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
   async deleteMany<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: DeleteManyParams<RecordType>,
+    params: DeleteManyParams<RecordType>
   ): Promise<DeleteManyResult<RecordType>> {
     throw new Error(`DELETE many ${resource} not implemented`);
   },
 
   async getList<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: GetListParams & QueryFunctionContext,
+    params: GetListParams & QueryFunctionContext
   ): Promise<GetListResult<RecordType>> {
+    console.log({ params });
     const url = new URL(`${baseApiUrl}/${resource}`);
-    const urlWithSortParams = appendSortParams(url, { field: params?.sort?.field, order: params?.sort?.order });
-    const urlWithSortAndFilterParams = appendFilterParams(urlWithSortParams, params.filter);
+    const urlWithParams = appendParams(
+      url,
+      {
+        field: params?.sort?.field,
+        order: params?.sort?.order,
+      },
+      params.filter,
+      {
+        page: params.pagination?.page,
+        limit: params.pagination?.perPage,
+      }
+    );
 
-    const { json } = await handleHttpClientResponse(urlWithSortAndFilterParams);
+    const { json } = await handleHttpClientResponse(urlWithParams);
     return { ...json, total: json.count };
   },
 
   async getMany<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: GetManyParams<RecordType> & QueryFunctionContext,
+    params: GetManyParams<RecordType> & QueryFunctionContext
   ): Promise<GetManyResult<RecordType>> {
     const url = `${baseApiUrl}/${resource}`;
     const { json } = await handleHttpClientResponse(url);
@@ -99,7 +132,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
   async getManyReference<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: GetManyReferenceParams & QueryFunctionContext,
+    params: GetManyReferenceParams & QueryFunctionContext
   ): Promise<GetManyReferenceResult<RecordType>> {
     const { target, id } = params;
     let url = new URL(`${baseApiUrl}/${resource}`);
@@ -111,7 +144,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
   async getOne<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: GetOneParams<RecordType> & QueryFunctionContext,
+    params: GetOneParams<RecordType> & QueryFunctionContext
   ): Promise<GetOneResult<RecordType>> {
     const { json } = await httpClient(`${baseApiUrl}/${resource}/${params.id}`);
     return { data: json };
@@ -119,7 +152,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
   async update<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: UpdateParams,
+    params: UpdateParams
   ): Promise<UpdateResult<RecordType>> {
     const { json } = await httpClient(`${baseApiUrl}/${resource}/${params.id}`, {
       method: 'PUT',
@@ -130,7 +163,7 @@ export const dataProvider = (baseApiUrl: string): DataProvider => ({
 
   async updateMany<RecordType extends RaRecord<Identifier>>(
     resource: string,
-    params: UpdateManyParams,
+    params: UpdateManyParams
   ): Promise<UpdateManyResult<RecordType>> {
     throw new Error(`Update many reference on ${resource} not implemented`);
   },
