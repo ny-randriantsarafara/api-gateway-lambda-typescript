@@ -47,20 +47,31 @@ export const generateLiveSearchFilters = (fields: string[]) => {
   ));
 };
 
+const getNestedValue = (obj: Record<string, any>, path: string): any => {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+};
+
 export const generateFilterLists = (filterValues: Record<string, Set<any>>, fields: string[]) => {
-  return Object.entries(filterValues)
-    .filter(([field]) => fields.includes(field))
-    .map(([field, values]) => (
-      <FilterList label={field} icon={<> </>} key={`filter-${field}`}>
-        {Array.from(values).map(value => (
-          <FilterListItem
-            label={String(value)}
-            value={{
-              [`${field}.eq`]: value,
-            }}
-            key={String(value)}
-          />
-        ))}
-      </FilterList>
-    ));
+  return fields.map(field => {
+    const values = getNestedValue(filterValues, field);
+    const label = field.split('.').pop() as string; // Get the last part of the nested field name
+
+    if (values) {
+      return (
+        <FilterList label={label} icon={<></>} key={`filter-${field}`}>
+          {Array.from(values).map(value => (
+            <FilterListItem
+              label={String(value)}
+              value={{
+                [`${field}.eq`]: value,
+              }}
+              key={String(value)}
+            />
+          ))}
+        </FilterList>
+      );
+    }
+
+    return null;
+  });
 };
