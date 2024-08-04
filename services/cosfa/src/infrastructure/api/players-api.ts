@@ -38,6 +38,14 @@ playersApi.register(
 );
 
 playersApi.register(
+  'GET',
+  '/players/filters-values',
+  withDatabaseConnection(client.connect, databaseUri),
+  async (request: HttpRequest) =>
+    repository.getFiltersValues((request.queryStringParameters?.fields?.split(',') || []) as string[])
+);
+
+playersApi.register(
   'PUT',
   '/players/{id}',
   withDatabaseConnection(client.connect, databaseUri),

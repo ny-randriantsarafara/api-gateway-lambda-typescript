@@ -6,6 +6,10 @@ players-api:
         method: get
         cors: true
     - http:
+        path: /players/filters-values
+        method: get
+        cors: true
+    - http:
         path: /players/{id}
         method: get
         request:
