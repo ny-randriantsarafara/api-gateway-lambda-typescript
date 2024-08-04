@@ -22,7 +22,13 @@ export const App = () => {
   return (
     <Admin layout={Layout} dataProvider={dataProvider(import.meta.env.VITE_API_BASE_URL)} queryClient={queryClient}>
       <Resource name="categories" list={CategoryList} show={CategoryShow} create={CategoryCreate} edit={CategoryEdit} />
-      <Resource name="players" list={PlayerList} create={PlayerCreate} edit={PlayerEdit} />
+      <Resource
+        name="players"
+        list={PlayerList}
+        create={PlayerCreate}
+        edit={PlayerEdit}
+        recordRepresentation={record => `${record.firstName} ${record.lastName}`}
+      />
     </Admin>
   );
 };

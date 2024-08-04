@@ -1,20 +1,18 @@
 import React from 'react';
-import { Edit, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin';
+import { DateInput, Edit, ReferenceArrayInput, TabbedForm } from 'react-admin';
+import { CommonCategoryFormFields } from './CategoryCreate';
 
 export const CategoryEdit = () => (
   <Edit>
-    <SimpleForm>
-      <TextInput disabled label="Id" source="id" name="id" />
-      <TextInput source="name" validate={required()} name="name" />
-      <NumberInput source="ageGroup" validate={required()} name="ageGroup" />
-      <SelectInput
-        source="gender"
-        choices={[
-          { id: 'G', name: 'Garçon' },
-          { id: 'F', name: 'Fille' },
-        ]}
-      />
-      <TextInput name="description" source="description" multiline />
-    </SimpleForm>
+    <TabbedForm>
+      <TabbedForm.Tab label="summary">
+        <CommonCategoryFormFields />
+      </TabbedForm.Tab>
+      <TabbedForm.Tab label="players">
+        <DateInput name="startDate" source="startDate" />
+        <DateInput name="endDate" source="endDate" />
+        <ReferenceArrayInput name="players" source="players" reference="players"></ReferenceArrayInput>
+      </TabbedForm.Tab>
+    </TabbedForm>
   </Edit>
 );

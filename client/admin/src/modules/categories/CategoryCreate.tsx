@@ -1,12 +1,13 @@
 import React from 'react';
-import { Create, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin';
+import { Create, NumberInput, required, SelectInput, TabbedForm, TextInput } from 'react-admin';
 
-export const CategoryCreate = () => (
-  <Create>
-    <SimpleForm>
+export const CommonCategoryFormFields = () => {
+  return (
+    <>
       <TextInput source="name" validate={required()} name="name" />
       <NumberInput source="ageGroup" validate={required()} name="ageGroup" />
       <SelectInput
+        name="gender"
         source="gender"
         choices={[
           { id: 'G', name: 'Garçon' },
@@ -14,6 +15,17 @@ export const CategoryCreate = () => (
         ]}
       />
       <TextInput name="description" source="description" multiline />
-    </SimpleForm>
+    </>
+  );
+};
+
+export const CategoryCreate = () => (
+  <Create>
+    <TabbedForm>
+      <TabbedForm.Tab label="summary">
+        <CommonCategoryFormFields />
+      </TabbedForm.Tab>
+      <TabbedForm.Tab label="players" disabled></TabbedForm.Tab>
+    </TabbedForm>
   </Create>
 );
