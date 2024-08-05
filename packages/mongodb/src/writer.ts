@@ -18,6 +18,19 @@ export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
       throw error;
     }
   },
+  createMany: async (data: any[], options?: QueryOptions) => {
+    try {
+      const result = await Model.insertMany(data);
+      let query = Model.find({ _id: { $in: result.map(doc => doc._id) } });
+      if (options?.hydrates) {
+        query = query.populate(options.hydrates);
+      }
+      return executeQuery(query, 'Documents not found after creation');
+    } catch (error) {
+      console.error('An error occurred while creating documents', error);
+      throw error;
+    }
+  },
   update: async (id: string, data: UpdateQuery<any>, options?: QueryOptions) => {
     let dbModel = await fetchAndThrowIfNotFound(Model.findById(id), `Document with id ${id} not found`);
     for (const key in data) {
@@ -38,6 +51,7 @@ export const writer = (Model: MongooseModel<any>): MongoDBWriter => ({
 
 export type MongoDBWriter = {
   create: (data: any, options?: QueryOptions) => Promise<any>;
+  createMany: (data: any[], options?: QueryOptions) => Promise<any[]>;
   update: (id: string, data: UpdateQuery<any>, options?: QueryOptions) => Promise<any>;
   delete: (id: string) => Promise<void>;
 };
