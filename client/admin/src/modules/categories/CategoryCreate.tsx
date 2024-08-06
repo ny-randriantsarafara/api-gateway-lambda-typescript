@@ -1,5 +1,6 @@
 import React from 'react';
 import { Create, NumberInput, required, SelectInput, TabbedForm, TextInput } from 'react-admin';
+import AutocompleteTableInput from '../../common/components/AutoompleteTableInput';
 
 export const CommonCategoryFormFields = () => {
   return (
@@ -25,7 +26,8 @@ export const CategoryCreate = () => (
       <TabbedForm.Tab label="summary">
         <CommonCategoryFormFields />
       </TabbedForm.Tab>
-      <TabbedForm.Tab label="players" disabled></TabbedForm.Tab>
+      <TabbedForm.Tab label="players" disabled>
+      </TabbedForm.Tab>
     </TabbedForm>
   </Create>
 );

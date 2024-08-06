@@ -1,6 +1,7 @@
 import React from 'react';
 import { DateInput, Edit, ReferenceArrayInput, TabbedForm } from 'react-admin';
 import { CommonCategoryFormFields } from './CategoryCreate';
+import AutocompleteTableInput from '../../common/components/AutoompleteTableInput';
 
 export const CategoryEdit = () => (
   <Edit>
@@ -11,7 +12,12 @@ export const CategoryEdit = () => (
       <TabbedForm.Tab label="players">
         <DateInput name="startDate" source="startDate" />
         <DateInput name="endDate" source="endDate" />
-        <ReferenceArrayInput name="players" source="players" reference="players"></ReferenceArrayInput>
+        <AutocompleteTableInput
+          source="players"
+          reference="players"
+          label="players"
+          target="id"
+        ></AutocompleteTableInput>
       </TabbedForm.Tab>
     </TabbedForm>
   </Edit>
