@@ -1,6 +1,6 @@
 import React from 'react';
 import { Create, NumberInput, required, SelectInput, TabbedForm, TextInput } from 'react-admin';
-import AutocompleteTableInput from '../../common/components/AutoompleteTableInput';
+import AutocompleteTableInput from '../../common/components/AutocompleteTableInput';
 
 export const CommonCategoryFormFields = () => {
   return (

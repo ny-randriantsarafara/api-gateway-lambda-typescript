@@ -1,7 +1,7 @@
 import React from 'react';
 import { DateInput, Edit, ReferenceArrayInput, TabbedForm } from 'react-admin';
 import { CommonCategoryFormFields } from './CategoryCreate';
-import AutocompleteTableInput from '../../common/components/AutoompleteTableInput';
+import AutocompleteTableInput from '../../common/components/AutocompleteTableInput';
 
 export const CategoryEdit = () => (
   <Edit>
